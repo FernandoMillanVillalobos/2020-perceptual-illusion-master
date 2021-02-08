@@ -190,21 +190,21 @@ knitr::read_chunk("scripts/label_log10.R")
 source("scripts/label_log10.R")
 ```
 
-# Introduction
+# Data Wrangling
 
-# Data Importing
+```{r}
+# Read in data file
+df.j <- read.table(file.choose(), sep = ",", check.names = FALSE)
 
-# Data Pre-Processing
+```
 
-# Exploratory Data Analysis (EDA)
 
-## Data Summarization
 
-## Data Visualization
 
-# IO test
 
-# Some plot
+
+
+
 
 # Linting
 
