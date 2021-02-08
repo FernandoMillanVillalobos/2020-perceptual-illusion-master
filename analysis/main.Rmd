@@ -128,7 +128,8 @@ library(lintr) # code linting
 library(sf) # spatial data handling
 library(rmarkdown)
 library(cowplot) # theme
-library(extrafont)", # fonts
+library(extrafont) # fonts
+library(janitor)", # names  
 file = "manifest.R")
 ```
 
@@ -192,19 +193,32 @@ source("scripts/label_log10.R")
 
 # Data Wrangling
 
-```{r}
-# Read in data file
-df.j <- read.table(file.choose(), sep = ",", check.names = FALSE)
+Importing datasets.
 
+```{r importing}
+# Read in data file
+df.j <- read.table("input/j_ds.csv", sep = ",", header = TRUE, check.names = FALSE)
+
+# Cleaning variables names
+df.j <- janitor::clean_names(df.j)
 ```
 
+Cleaning Julien's ds variables.
 
+```{r recoding}
+# Regrouping hours_sleep bottom and top categories
+df.j$hours_sleep[df.j$hours_sleep == "<3"] <- "less_than_3"
+df.j$hours_sleep[df.j$hours_sleep == ">8"] <- "more_than_8"
 
+# Recoding training categories
+df.j$photo_training[df.j$photo_training == "no training"] <- "no_training" 
+df.j$carto_gis_training[df.j$carto_gis_training == "no training"] <- "no_training" 
+df.j$carto_gis_training[df.j$carto_gis_training == "5"] <- "Professional" 
 
-
-
-
-
+# Filling empty values for circle_below and circle_above as NAs
+df.j$circle_below[df.j$circle_below == ""] <- NA 
+df.j$circle_above[df.j$circle_above == ""] <- NA 
+```
 
 # Linting
 
