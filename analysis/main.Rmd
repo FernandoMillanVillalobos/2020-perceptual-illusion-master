@@ -1,14 +1,15 @@
 ---
-title: "rddj-template"
-subtitle: "My analysis"
-author: "My Name"
-date: "January 2020"
+title: "Perceptual Illusion"
+subtitle: "Data Analysis"
+author: "Fernando Millan Villalobos"
+date: "February 2021"
 output:
   html_document:
     code_folding: show
     echo: TRUE
     warning: FALSE
     message: FALSE
+    highlight: pygments
     theme: paper
     df_print: kable
     toc: yes
@@ -17,13 +18,18 @@ output:
     toc_float: 
       collapsed: yes
       smooth_scroll: false
+  pdf_document:
+    toc: yes
+  word_document:
+    toc: yes
+  allways_allow_html: yes
 ---
 
 ```{r, echo=FALSE}
 # CONFIG
 user_name <- "fernandomillanvillalobos" # your Git username (only needed if
 # you want to deploy to GH pages)
-project_name <- "rddj-template" # adapt!
+project_name <- "2020-perceptual-illusion-master" # adapt!
 package_date <- "2021-01-01" # date of the CRAN snapshot that
 # the checkpoint package uses
 r_version <- "4.0.3" # R-Version to use
@@ -41,15 +47,11 @@ This report was generated on `r Sys.time()`. R version: `r paste0(version$major,
 
 ## R-Script & data
 
-The preprocessing and analysis of the data was conducted in the [R project for statistical computing](https://www.r-project.org/). The RMarkdown script used to generate this document and all the resulting data can be downloaded [under this link](http://%60r%20user_name%60.github.io/%60r%20project_name%60/). Through executing `main.Rmd`, the herein described process can be reproduced and this document can be generated. In the course of this, data from the folder `input` will be processed and results will be written to `output`. The html on-line version of the analysis can be accessed through this [link](https://%60r%20user_name%60.github.io/%60r%20project_name%60/).
+The pre-processing and analysis of the data was conducted in the [R project for statistical computing](https://www.r-project.org/). The RMarkdown script used to generate this document and all the resulting data can be downloaded [under this link](http:fernandomillanvillalobs.github.io/2020-perceptual-illusion-master/). Through executing `main.Rmd`, the herein described process can be reproduced and this document can be generated. In the course of this, data from the folder `input` will be processed and results will be written to `output`. The html on-line version of the analysis can be accessed through this [link](https://fernandomillanvillalobos.github.io/2020-perceptual-illusion-master/).
 
 ## GitHub
 
-The code for the herein described process can also be freely downloaded from [https://github.com/`r user_name`/`r project_name`](https://github.com/%60r%20user_name%60/%60r%20project_name%60).
-
-## License
-
-...
+The code for the herein described process can also be freely downloaded from [https://github.com/fernandomillanvillalobs/2020-perceptual-illusion-master](https://github.com/fernandomillanvillalobos/2020-perceptual-illusion-master).
 
 ## Data description of output files
 
@@ -60,10 +62,6 @@ The code for the herein described process can also be freely downloaded from [ht
 | a         | Numeric | ...         |
 | b         | Numeric | ...         |
 | c         | Numeric | ...         |
-
-#### `xyz.csv`
-
-...
 
 # Set up
 
@@ -145,7 +143,7 @@ if (!require(checkpoint)) {
     require(devtools)
   }
   devtools::install_github("RevolutionAnalytics/checkpoint",
-                           ref = "v0.3.2", # could be adapted later,
+                           ref = "v0.4.10", # could be adapted later,
                            # as of now (beginning of July 2017
                            # this is the current release on CRAN)
                            repos = "http://cran.us.r-project.org")
@@ -206,31 +204,7 @@ source("scripts/label_log10.R")
 
 # IO test
 
-```{r, echo=TRUE, message=FALSE, warning=FALSE}
-x <- read.csv2("input/test.csv", sep = ",")
-x
-write.csv2(x, "output/abc.csv", row.names = F)
-write.csv2(x, "output/xyz.csv", row.names = F)
-# the following file would be ignored by Git if saved into the ignore folder
-# see README for further information
-# write.csv2(x, "output/ignore/fgh.csv", row.names = F)
-```
-
 # Some plot
-
-```{r, echo=TRUE, message=FALSE, warning=FALSE}
-set.seed(123)
-x <- rnorm(1000)
-y <- x * 2 + rnorm(1000)
-df <- data.frame(x, y)
-ggplot(df) +
-  geom_point(aes(x = x, y = y)) +
-  geom_smooth(aes(x = x, y = y)) +
-  labs(title = "The correlation between x and y", 
-       subtitle = "A ggplot2 approach", 
-       caption = "source: a pseudo-number generator with seed 123") +
-  theme_minimal()
-```
 
 # Linting
 
