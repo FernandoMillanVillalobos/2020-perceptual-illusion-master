@@ -213,11 +213,6 @@ Cleaning Julien's ds variables.
 df.j$hours_sleep[df.j$hours_sleep == "<3"] <- "less_than_3"
 df.j$hours_sleep[df.j$hours_sleep == ">8"] <- "more_than_8"
 
-# Recoding training categories
-df.j$photo_training[df.j$photo_training == "no training"] <- "no_training" 
-df.j$carto_gis_training[df.j$carto_gis_training == "no training"] <- "no_training" 
-df.j$carto_gis_training[df.j$carto_gis_training == "5"] <- "Professional" 
-
 # Filling empty values for circle_below and circle_above as NAs
 df.j$circle_below[df.j$circle_below == ""] <- NA 
 df.j$circle_above[df.j$circle_above == ""] <- NA 
