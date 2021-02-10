@@ -198,9 +198,12 @@ Importing datasets.
 ```{r importing}
 # Read in data file
 df.j <- read.table("input/j_ds.csv", sep = ",", header = TRUE, check.names = FALSE)
+df.g <- read.table("input/g_ds.csv", sep = ",", header = TRUE, check.names = FALSE)
 
 # Cleaning variables names
 df.j <- janitor::clean_names(df.j)
+df.g <- janitor::clean_names(df.g)
+
 ```
 
 Cleaning Julien's ds variables.
@@ -218,6 +221,68 @@ df.j$carto_gis_training[df.j$carto_gis_training == "5"] <- "Professional"
 # Filling empty values for circle_below and circle_above as NAs
 df.j$circle_below[df.j$circle_below == ""] <- NA 
 df.j$circle_above[df.j$circle_above == ""] <- NA 
+```
+
+Cleaning Gianna's ds variables.
+
+```{r renaming}
+# Deleting useless column
+df.g$haendigkeit <- NULL
+
+# Renaming variables names
+df.g <- df.g %>% 
+  rename("age_group" = "alter",
+         "education" = "ausbildung",
+         "hours_sleep" = "schlaf",
+         "color_blindness" = "farbenblindheit",
+         "photo_exposure" = "fotos",
+         "carto_gis_exposure" = "kartographie",
+         "geovis_3d_exposure" = "drei_d_geovis",
+         "satellite_exposure" = "satellitenbilder",
+         "mask" = "maske")
+
+```
+
+```{r recoding}
+# Adding new variables
+df.g <- transform(df.g,
+                 art_light_r_w = NA, 
+                 light_dir_r_s = NA,
+                 photo_training = NA,
+                 carto_gis_training = NA,
+                 geovis_3d_training = NA,
+                 satellite_training = NA,
+                 circle_below = NA,
+                 circle_above = NA,
+                 shapes_01 = NA,
+                 shapes_02 = NA,
+                 shapes_03 = NA,
+                 shapes_04 = NA,
+                 shapes_05 = NA,
+                 shapes_06 = NA,
+                 shapes_07 = NA,
+                 shapes_08 = NA,
+                 shapes_09 = NA,
+                 shapes_10 = NA)
+
+# Reordering variables
+df.g <- df.g[, names(df.j)]
+
+# Recoding education variable
+df.g$education[df.g$education == "University: Bachelor degree or equivalent"] <- "bachelor"
+df.g$education[df.g$education == "University of applied sciences"] <- "bachelor" # assumption! 
+df.g$education[df.g$education == "University: Master degree or equivalent"] <- "master"
+df.g$education[df.g$education == "University: Doctoral degree"] <- "doctoral"
+df.g$education[df.g$education == "Apprenticeship high school"] <- "high_school"
+df.g$education[df.g$education == "Academic high school"] <- "high_school"
+
+# Regrouping age_group category
+df.g$age_group[df.g$age_group == "18-29" & df.g$education == "bachelor" | df.g$education == "master"] <- "20-29"
+df.g$age_group[df.g$age_group == "18-29" & df.g$education == "high_school"] <- "10-19"
+
+# Values for exposure to lowercase
+df.g[, 16:20] <- apply(df.g[, 16:20], 2, tolower)
+
 ```
 
 # Linting
