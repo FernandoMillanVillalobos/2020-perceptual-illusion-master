@@ -199,10 +199,12 @@ Importing datasets.
 # Read in data file
 df.j <- read.table("input/j_ds.csv", sep = ",", header = TRUE, check.names = FALSE)
 df.g <- read.table("input/g_ds.csv", sep = ",", header = TRUE, check.names = FALSE)
+df.v <- read.table("input/v_ds.csv", sep = ",", header = TRUE, check.names = FALSE)
 
 # Cleaning variables names
 df.j <- janitor::clean_names(df.j)
 df.g <- janitor::clean_names(df.g)
+df.v <- janitor::clean_names(df.v)
 
 ```
 
@@ -279,6 +281,15 @@ df.g$age_group[df.g$age_group == "18-29" & df.g$education == "high_school"] <- "
 df.g[, 16:20] <- apply(df.g[, 16:20], 2, tolower)
 
 ```
+
+Cleaning Victoria's ds variables.
+
+```{r}
+# Adding hemisphere variable
+df.v$hemisphere <- "southern" 
+
+```
+
 
 # Linting
 
