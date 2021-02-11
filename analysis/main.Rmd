@@ -129,6 +129,7 @@ library(sf) # spatial data handling
 library(rmarkdown)
 library(cowplot) # theme
 library(extrafont) # fonts
+library(waldo) # compare 
 library(janitor)", # names  
 file = "manifest.R")
 ```
@@ -210,7 +211,7 @@ df.v <- janitor::clean_names(df.v)
 
 Cleaning Julien's ds variables.
 
-```{r recoding}
+```{r}
 # Regrouping hours_sleep bottom and top categories
 df.j$hours_sleep[df.j$hours_sleep == "<3"] <- "less_than_3"
 df.j$hours_sleep[df.j$hours_sleep == ">8"] <- "more_than_8"
@@ -227,7 +228,7 @@ df.j$circle_above[df.j$circle_above == ""] <- NA
 
 Cleaning Gianna's ds variables.
 
-```{r renaming}
+```{r}
 # Deleting useless column
 df.g$haendigkeit <- NULL
 
@@ -245,7 +246,7 @@ df.g <- df.g %>%
 
 ```
 
-```{r recoding}
+```{r}
 # Adding new variables
 df.g <- transform(df.g,
                  art_light_r_w = NA, 
@@ -292,8 +293,9 @@ df.g$hours_sleep[df.g$hours_sleep == "6"] <- "6-7"
 df.g$hours_sleep[df.g$hours_sleep == "7"] <- "7-8"
 df.g$hours_sleep[df.g$hours_sleep == "8"] <- "7-8"
 
-# Values for exposure to lowercase
+# Values to lowercase
 df.g[, 16:20] <- apply(df.g[, 16:20], 2, tolower)
+df.g$color_blindness <- unlist(lapply(df.g$color_blindness, tolower))
 
 ```
 
@@ -301,10 +303,27 @@ Cleaning Victoria's ds variables.
 
 ```{r}
 # Adding hemisphere variable
-df.v$hemisphere <- "southern" 
+df.v$hemisphere <- "southern"
+
+# Reordering variables
+df.v <- df.v[, names(df.j)]
+
+# Splitting character vector from hours_sleep
+df.v$hours_sleep <- unlist(strsplit(df.v$hours_sleep, " hours"))
+
+# Recoding education variable
+df.v$education <- "bachelor"
+
+# Values to lowercase
+df.v$light_dir_r_s <- unlist(lapply(df.v$light_dir_r_s, tolower))
+
+# Filling empty values for exposure variables
+df.v$photo_exposure <- ifelse(df.v$photo_exposure == " ", NA, df.v$photo_exposure)
+df.v$carto_gis_exposure <- ifelse(df.v$carto_gis_exposure == " ", NA, df.v$carto_gis_exposure)
+df.v$geovis_3d_exposure <- ifelse(df.v$geovis_3d_exposure == " ", NA, df.v$geovis_3d_exposure)
+df.v$satellite_exposure <- ifelse(df.v$satellite_exposure == " ", NA, df.v$satellite_exposure)
 
 ```
-
 
 # Linting
 
