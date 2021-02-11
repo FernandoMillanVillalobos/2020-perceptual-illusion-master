@@ -201,11 +201,13 @@ Importing datasets.
 df.j <- read.table("input/j_ds.csv", sep = ",", header = TRUE, check.names = FALSE)
 df.g <- read.table("input/g_ds.csv", sep = ",", header = TRUE, check.names = FALSE)
 df.v <- read.table("input/v_ds.csv", sep = ",", header = TRUE, check.names = FALSE)
+df.a <- read.table("input/a_ds.csv", sep = ",", header = TRUE, check.names = FALSE)
 
 # Cleaning variables names
 df.j <- janitor::clean_names(df.j)
 df.g <- janitor::clean_names(df.g)
 df.v <- janitor::clean_names(df.v)
+df.a <- janitor::clean_names(df.a)
 
 ```
 
