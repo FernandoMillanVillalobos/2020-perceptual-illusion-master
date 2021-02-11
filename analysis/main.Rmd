@@ -214,6 +214,11 @@ Cleaning Julien's ds variables.
 # Regrouping hours_sleep bottom and top categories
 df.j$hours_sleep[df.j$hours_sleep == "<3"] <- "less_than_3"
 df.j$hours_sleep[df.j$hours_sleep == ">8"] <- "more_than_8"
+df.j$hours_sleep[df.j$hours_sleep == "4"] <- "4-5"
+df.j$hours_sleep[df.j$hours_sleep == "5"] <- "5-6"
+df.j$hours_sleep[df.j$hours_sleep == "6"] <- "6-7"
+df.j$hours_sleep[df.j$hours_sleep == "7"] <- "7-8"
+df.j$hours_sleep[df.j$hours_sleep == "8"] <- "7-8"
 
 # Filling empty values for circle_below and circle_above as NAs
 df.j$circle_below[df.j$circle_below == ""] <- NA 
@@ -276,6 +281,16 @@ df.g$education[df.g$education == "Academic high school"] <- "high_school"
 # Regrouping age_group category
 df.g$age_group[df.g$age_group == "18-29" & df.g$education == "bachelor" | df.g$education == "master"] <- "20-29"
 df.g$age_group[df.g$age_group == "18-29" & df.g$education == "high_school"] <- "10-19"
+
+# Regrouping hours_sleep bottom and top categories
+df.g$hours_sleep[df.g$hours_sleep == "<3"] <- "less_than_3"
+df.g$hours_sleep[df.g$hours_sleep == ">8"] <- "more_than_8"
+df.g$hours_sleep[df.g$hours_sleep == "3"] <- "3-4"
+df.g$hours_sleep[df.g$hours_sleep == "4"] <- "4-5"
+df.g$hours_sleep[df.g$hours_sleep == "5"] <- "5-6"
+df.g$hours_sleep[df.g$hours_sleep == "6"] <- "6-7"
+df.g$hours_sleep[df.g$hours_sleep == "7"] <- "7-8"
+df.g$hours_sleep[df.g$hours_sleep == "8"] <- "7-8"
 
 # Values for exposure to lowercase
 df.g[, 16:20] <- apply(df.g[, 16:20], 2, tolower)
