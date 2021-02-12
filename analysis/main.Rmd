@@ -208,12 +208,11 @@ df.j <- janitor::clean_names(df.j)
 df.g <- janitor::clean_names(df.g)
 df.v <- janitor::clean_names(df.v)
 df.a <- janitor::clean_names(df.a)
-
 ```
 
 Cleaning Julien's ds variables.
 
-```{r}
+```{r cleaning_j}
 # Regrouping hours_sleep bottom and top categories
 df.j$hours_sleep[df.j$hours_sleep == "<3"] <- "less_than_3"
 df.j$hours_sleep[df.j$hours_sleep == ">8"] <- "more_than_8"
@@ -230,7 +229,7 @@ df.j$circle_above[df.j$circle_above == ""] <- NA
 
 Cleaning Gianna's ds variables.
 
-```{r}
+```{r cleaning_g}
 # Deleting useless column
 df.g$haendigkeit <- NULL
 
@@ -245,10 +244,9 @@ df.g <- df.g %>%
          "geovis_3d_exposure" = "drei_d_geovis",
          "satellite_exposure" = "satellitenbilder",
          "mask" = "maske")
-
 ```
 
-```{r}
+```{r cleaning_g}
 # Adding new variables
 df.g <- transform(df.g,
                  art_light_r_w = NA, 
@@ -303,12 +301,15 @@ df.g$color_blindness <- unlist(lapply(df.g$color_blindness, tolower))
 
 Cleaning Victoria's ds variables.
 
-```{r}
+```{r cleaning_v}
 # Adding hemisphere variable
 df.v$hemisphere <- "southern"
 
 # Reordering variables
 df.v <- df.v[, names(df.j)]
+
+# Regrouping age_group category
+df.v$age_group[df.v$age_group <= "29"] <- "20-29"
 
 # Splitting character vector from hours_sleep
 df.v$hours_sleep <- unlist(strsplit(df.v$hours_sleep, " hours"))
@@ -324,7 +325,45 @@ df.v$photo_exposure <- ifelse(df.v$photo_exposure == " ", NA, df.v$photo_exposur
 df.v$carto_gis_exposure <- ifelse(df.v$carto_gis_exposure == " ", NA, df.v$carto_gis_exposure)
 df.v$geovis_3d_exposure <- ifelse(df.v$geovis_3d_exposure == " ", NA, df.v$geovis_3d_exposure)
 df.v$satellite_exposure <- ifelse(df.v$satellite_exposure == " ", NA, df.v$satellite_exposure)
+```
 
+Cleaning Amy's ds variables.
+
+```{r cleaning_a}
+# Adding hemisphere variable
+df.a$hemisphere <- "southern"
+
+# Reordering variables
+df.a <- df.a[, names(df.j)]
+
+# Regrouping age_group category
+df.a$age_group[df.a$age_group <= "19"] <- "10-19"
+df.a$age_group[df.a$age_group <= "29" & df.a$age_group >= 20] <- "20-29"
+df.a$age_group[df.a$age_group <= "39" & df.a$age_group >= 30] <- "30-39"
+df.a$age_group[df.a$age_group <= "49" & df.a$age_group >= 40] <- "40-49"
+df.a$age_group[df.a$age_group <= "59" & df.a$age_group >= 50] <- "50-59"
+df.a$age_group[df.a$age_group <= "69" & df.a$age_group >= 60] <- "60-69"
+
+# Recoding education variable
+df.a$education[df.a$education == "Currently registered at University/College for Bachelor degree or equivalent"] <- "bachelor"
+df.a$education[df.a$education == "University/College: Bachelor degree or equivalent"] <- "bachelor"
+df.a$education[df.a$education == "University/College: Honours, Masters, PhD degree or equivalent"] <- "master"
+df.a$education[df.a$education == "High school diploma or equivalent ( e.g. NCS or matric )"] <- "high_school"
+
+# Recoding hours_sleep
+df.a$hours_sleep <- unlist(strsplit(df.a$hours_sleep, " hours")) # splitting characters
+df.a$hours_sleep <- unlist(lapply(df.a$hours_sleep, tolower)) # values to lowercase  
+df.a$hours_sleep[df.a$hours_sleep == "more than 8"] <- "more_than_8" # recoding
+
+# Values to lowercase
+df.a$art_light_r_w <- unlist(lapply(df.a$art_light_r_w, tolower))
+df.a$light_dir_r_s <- unlist(lapply(df.a$light_dir_r_s, tolower))
+
+# Filling empty values for exposure variables
+df.a$photo_exposure <- ifelse(df.a$photo_exposure == " ", NA, df.a$photo_exposure)
+df.a$carto_gis_exposure <- ifelse(df.a$carto_gis_exposure == " ", NA, df.a$carto_gis_exposure)
+df.a$geovis_3d_exposure <- ifelse(df.a$geovis_3d_exposure == " ", NA, df.a$geovis_3d_exposure)
+df.a$satellite_exposure <- ifelse(df.a$satellite_exposure == " ", NA, df.a$satellite_exposure)
 ```
 
 # Linting
