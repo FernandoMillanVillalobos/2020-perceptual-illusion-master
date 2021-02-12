@@ -47,7 +47,7 @@ This report was generated on `r Sys.time()`. R version: `r paste0(version$major,
 
 ## R-Script & data
 
-The pre-processing and analysis of the data was conducted in the [R project for statistical computing](https://www.r-project.org/). The RMarkdown script used to generate this document and all the resulting data can be downloaded [under this link](http:fernandomillanvillalobs.github.io/2020-perceptual-illusion-master/). Through executing `main.Rmd`, the herein described process can be reproduced and this document can be generated. In the course of this, data from the folder `input` will be processed and results will be written to `output`. The html on-line version of the analysis can be accessed through this [link](https://fernandomillanvillalobos.github.io/2020-perceptual-illusion-master/).
+The pre-processing and analysis of the data was conducted in the [R project for statistical computing](https://www.r-project.org/). The RMarkdown script used to generate this document can be downloaded [under this link](http:fernandomillanvillalobs.github.io/2020-perceptual-illusion-master/). Through executing `main.Rmd`, the herein described process can be reproduced and this document can be generated. The data and information in the data sets used for this analysis are intended for use only by persons involved in the project, therefore are not available for the general public. The html on-line version of the analysis can be accessed through this [link](https://fernandomillanvillalobos.github.io/2020-perceptual-illusion-master/).
 
 ## GitHub
 
@@ -55,13 +55,13 @@ The code for the herein described process can also be freely downloaded from [ht
 
 ## Data description of output files
 
-#### `abc.csv` (Example)
+#### `df_pi.csv` (Example)
 
-| Attribute | Type    | Description |
-|-----------|---------|-------------|
-| a         | Numeric | ...         |
-| b         | Numeric | ...         |
-| c         | Numeric | ...         |
+| ds_owner  | hemisphere | id | gender | age_group | 
+|-----------|------------|----|--------|------------
+| j         | northern   | 1  | f      | 30-39     |
+| g         | northern   | 2  | m      | 20-29     |
+| v         | southern   | 3  | m      | 20-29     |
 
 # Set up
 
