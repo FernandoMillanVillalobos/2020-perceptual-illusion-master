@@ -372,7 +372,6 @@ Creating all-in-one df for analysis and viz
 df <- rbind(df.j, df.g, df.v, df.a)
 ```
 
-
 # Linting
 
 The code in this RMarkdown is linted with the [lintr package](https://github.com/jimhester/lintr), which is based on the [tidyverse style guide](http://style.tidyverse.org/).
