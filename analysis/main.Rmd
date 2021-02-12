@@ -246,7 +246,7 @@ df.g <- df.g %>%
          "mask" = "maske")
 ```
 
-```{r cleaning_g}
+```{r}
 # Adding new variables
 df.g <- transform(df.g,
                  art_light_r_w = NA, 
