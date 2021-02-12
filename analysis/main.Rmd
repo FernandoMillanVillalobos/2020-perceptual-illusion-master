@@ -198,10 +198,10 @@ Importing datasets.
 
 ```{r importing}
 # Read in data file
-df.j <- read.table("input/j_ds.csv", sep = ",", header = TRUE, check.names = FALSE)
-df.g <- read.table("input/g_ds.csv", sep = ",", header = TRUE, check.names = FALSE)
-df.v <- read.table("input/v_ds.csv", sep = ",", header = TRUE, check.names = FALSE)
-df.a <- read.table("input/a_ds.csv", sep = ",", header = TRUE, check.names = FALSE)
+df.j <- read.table("input/ignore/j_ds.csv", sep = ",", header = TRUE, check.names = FALSE)
+df.g <- read.table("input/ignore/g_ds.csv", sep = ",", header = TRUE, check.names = FALSE)
+df.v <- read.table("input/ignore/v_ds.csv", sep = ",", header = TRUE, check.names = FALSE)
+df.a <- read.table("input/ignore/a_ds.csv", sep = ",", header = TRUE, check.names = FALSE)
 
 # Cleaning variables names
 df.j <- janitor::clean_names(df.j)
