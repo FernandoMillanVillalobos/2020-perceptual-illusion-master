@@ -230,7 +230,40 @@ df.j$hours_sleep[df.j$hours_sleep == "8"] <- "7-8"
 
 # Filling empty values for circle_below and circle_above as NAs
 df.j$circle_below[df.j$circle_below == ""] <- NA 
-df.j$circle_above[df.j$circle_above == ""] <- NA 
+df.j$circle_above[df.j$circle_above == ""] <- NA
+
+# Recoding geovis_3d_exposure and satellite_exposure variables
+df.j$geovis_3d_exposure[df.j$geovis_3d_exposure == "never"] <- 1
+df.j$geovis_3d_exposure[df.j$geovis_3d_exposure == "rarely"] <- 2
+df.j$geovis_3d_exposure[df.j$geovis_3d_exposure == "occassionally"] <- 3
+df.j$geovis_3d_exposure[df.j$geovis_3d_exposure == "often"] <- 4
+df.j$geovis_3d_exposure[df.j$geovis_3d_exposure == "daily"] <- 5
+# geovis_3d_exposure
+df.j$satellite_exposure[df.j$satellite_exposure == "never"] <- 1
+df.j$satellite_exposure[df.j$satellite_exposure == "rarely"] <- 2
+df.j$satellite_exposure[df.j$satellite_exposure == "occassionally"] <- 3
+df.j$satellite_exposure[df.j$satellite_exposure == "often"] <- 4
+df.j$satellite_exposure[df.j$satellite_exposure == "daily"] <- 5
+# satellite_exposure
+
+# Converting new values to integer
+df.j$geovis_3d_exposure <- as.integer(df.j$geovis_3d_exposure)
+df.j$satellite_exposure <- as.integer(df.j$satellite_exposure)
+
+# Adding values by row
+df.j$expertise_sum <- rowSums(df.j[, 12:19], na.rm = TRUE)
+
+# Regrouping categories
+df.j$expertise[df.j$expertise_sum >= 1 & df.j$expertise_sum <= 10] <- 1
+df.j$expertise[df.j$expertise_sum >= 11 & df.j$expertise_sum <= 20] <- 2
+df.j$expertise[df.j$expertise_sum >= 21 & df.j$expertise_sum <= 30] <- 3
+df.j$expertise[df.j$expertise_sum >= 31 & df.j$expertise_sum <= 40] <- 4
+df.j$expertise[df.j$expertise_sum >= 41 & df.j$expertise_sum <= 50] <- 5
+df.j$expertise[df.j$expertise_sum == 0] <- "NA"
+
+#Reordering variables
+df.j <- df.j %>% 
+  select(1:19, expertise_sum, expertise, mask, circle_below, circle_above,23:74)
 ```
 
 Cleaning Gianna's ds variables.
@@ -272,7 +305,9 @@ df.g <- transform(df.g,
                  shapes_07 = NA,
                  shapes_08 = NA,
                  shapes_09 = NA,
-                 shapes_10 = NA)
+                 shapes_10 = NA,
+                 expertise_sum = NA,
+                 expertise = NA)
 
 # Reordering variables
 df.g <- df.g[, names(df.j)]
@@ -300,16 +335,60 @@ df.g$hours_sleep[df.g$hours_sleep == "7"] <- "7-8"
 df.g$hours_sleep[df.g$hours_sleep == "8"] <- "7-8"
 
 # Values to lowercase
-df.g[, 16:20] <- apply(df.g[, 16:20], 2, tolower)
+df.g[, 16:19] <- apply(df.g[, 16:19], 2, tolower)
 df.g$color_blindness <- unlist(lapply(df.g$color_blindness, tolower))
 
+# Recoding _exposure variables
+df.g$photo_exposure[df.g$photo_exposure == "never"] <- 1
+df.g$photo_exposure[df.g$photo_exposure == "rarely"] <- 2
+df.g$photo_exposure[df.g$photo_exposure == "occasionally"] <- 3
+df.g$photo_exposure[df.g$photo_exposure == "often"] <- 4
+df.g$photo_exposure[df.g$photo_exposure == "daily"] <- 5
+# photo_exposure
+df.g$carto_gis_exposure[df.g$carto_gis_exposure == "never"] <- 1
+df.g$carto_gis_exposure[df.g$carto_gis_exposure == "rarely"] <- 2
+df.g$carto_gis_exposure[df.g$carto_gis_exposure == "occasionally"] <- 3
+df.g$carto_gis_exposure[df.g$carto_gis_exposure == "often"] <- 4
+df.g$carto_gis_exposure[df.g$carto_gis_exposure == "daily"] <- 5
+# carto_gis_exposure
+df.g$geovis_3d_exposure[df.g$geovis_3d_exposure == "never"] <- 1
+df.g$geovis_3d_exposure[df.g$geovis_3d_exposure == "rarely"] <- 2
+df.g$geovis_3d_exposure[df.g$geovis_3d_exposure == "occasionally"] <- 3
+df.g$geovis_3d_exposure[df.g$geovis_3d_exposure == "often"] <- 4
+df.g$geovis_3d_exposure[df.g$geovis_3d_exposure == "daily"] <- 5
+# geovis_3d_exposure
+df.g$satellite_exposure[df.g$satellite_exposure == "never"] <- 1
+df.g$satellite_exposure[df.g$satellite_exposure == "rarely"] <- 2
+df.g$satellite_exposure[df.g$satellite_exposure == "occasionally"] <- 3
+df.g$satellite_exposure[df.g$satellite_exposure == "often"] <- 4
+df.g$satellite_exposure[df.g$satellite_exposure == "daily"] <- 5
+# satellite_exposure
+
+# Converting new values to integer
+df.g$photo_exposure <- as.integer(df.g$photo_exposure)
+df.g$carto_gis_exposure <- as.integer(df.g$carto_gis_exposure)
+df.g$geovis_3d_exposure <- as.integer(df.g$geovis_3d_exposure)
+df.g$satellite_exposure <- as.integer(df.g$satellite_exposure)
+
+# Adding values by row
+df.g$expertise_sum <- rowSums(df.g[, 12:19], na.rm = TRUE)
+
+# Regrouping categories
+df.g$expertise[df.g$expertise_sum >= 1 & df.g$expertise_sum <= 10] <- 1
+df.g$expertise[df.g$expertise_sum >= 11 & df.g$expertise_sum <= 20] <- 2
+df.g$expertise[df.g$expertise_sum >= 21 & df.g$expertise_sum <= 30] <- 3
+df.g$expertise[df.g$expertise_sum >= 31 & df.g$expertise_sum <= 40] <- 4
+df.g$expertise[df.g$expertise_sum >= 41 & df.g$expertise_sum <= 50] <- 5
+df.g$expertise[df.g$expertise_sum == 0] <- "NA"
 ```
 
 Cleaning Victoria's ds variables.
 
 ```{r cleaning_v}
-# Adding hemisphere variable
+# Adding variables
 df.v$hemisphere <- "southern"
+df.v$expertise_sum <- "NA"
+df.v$expertise <- "NA"
 
 # Reordering variables
 df.v <- df.v[, names(df.j)]
@@ -327,10 +406,41 @@ df.v$education <- "bachelor"
 df.v$light_dir_r_s <- unlist(lapply(df.v$light_dir_r_s, tolower))
 
 # Filling empty values for exposure variables
-df.v$photo_exposure <- ifelse(df.v$photo_exposure == " ", NA, df.v$photo_exposure)
+df.v$photo_exposure <- ifelse(df.v$photo_exposure == " ", NA, df.v$satellite_exposure)
 df.v$carto_gis_exposure <- ifelse(df.v$carto_gis_exposure == " ", NA, df.v$carto_gis_exposure)
 df.v$geovis_3d_exposure <- ifelse(df.v$geovis_3d_exposure == " ", NA, df.v$geovis_3d_exposure)
 df.v$satellite_exposure <- ifelse(df.v$satellite_exposure == " ", NA, df.v$satellite_exposure)
+
+# Recoding _exposure variables
+df.v$photo_exposure[df.v$photo_exposure == "never"] <- 1
+df.v$photo_exposure[df.v$photo_exposure == "daily"] <- 5
+# photo_exposure
+df.v$carto_gis_exposure[df.v$carto_gis_exposure == "never"] <- 1
+df.v$carto_gis_exposure[df.v$carto_gis_exposure == "daily"] <- 5
+# carto_gis_exposure
+df.v$geovis_3d_exposure[df.v$geovis_3d_exposure == "never"] <- 1
+df.v$geovis_3d_exposure[df.v$geovis_3d_exposure == "daily"] <- 5
+# geovis_3d_exposure
+df.v$satellite_exposure[df.v$satellite_exposure == "never"] <- 1
+df.v$satellite_exposure[df.v$satellite_exposure == "daily"] <- 5
+# satellite_exposure
+
+# Converting new values to integer
+df.v$photo_exposure <- as.integer(df.v$photo_exposure)
+df.v$carto_gis_exposure <- as.integer(df.v$carto_gis_exposure)
+df.v$geovis_3d_exposure <- as.integer(df.v$geovis_3d_exposure)
+df.v$satellite_exposure <- as.integer(df.v$satellite_exposure)
+
+# Adding values by row
+df.v$expertise_sum <- rowSums(df.v[, 12:19], na.rm = TRUE)
+
+# Regrouping categories
+df.v$expertise[df.v$expertise_sum >= 1 & df.v$expertise_sum <= 10] <- 1
+df.v$expertise[df.v$expertise_sum >= 11 & df.v$expertise_sum <= 20] <- 2
+df.v$expertise[df.v$expertise_sum >= 21 & df.v$expertise_sum <= 30] <- 3
+df.v$expertise[df.v$expertise_sum >= 31 & df.v$expertise_sum <= 40] <- 4
+df.v$expertise[df.v$expertise_sum >= 41 & df.v$expertise_sum <= 50] <- 5
+df.v$expertise[df.v$expertise_sum == 0] <- "NA"
 ```
 
 Cleaning Amy's ds variables.
@@ -338,6 +448,8 @@ Cleaning Amy's ds variables.
 ```{r cleaning_a}
 # Adding hemisphere variable
 df.a$hemisphere <- "southern"
+df.a$expertise_sum <- "NA"
+df.a$expertise <- "NA"
 
 # Reordering variables
 df.a <- df.a[, names(df.j)]
@@ -366,13 +478,44 @@ df.a$art_light_r_w <- unlist(lapply(df.a$art_light_r_w, tolower))
 df.a$light_dir_r_s <- unlist(lapply(df.a$light_dir_r_s, tolower))
 
 # Filling empty values for exposure variables
-df.a$photo_exposure <- ifelse(df.a$photo_exposure == " ", NA, df.a$photo_exposure)
+df.a$photo_exposure <- ifelse(df.a$photo_exposure == " ", NA, df.a$satellite_exposure)
 df.a$carto_gis_exposure <- ifelse(df.a$carto_gis_exposure == " ", NA, df.a$carto_gis_exposure)
 df.a$geovis_3d_exposure <- ifelse(df.a$geovis_3d_exposure == " ", NA, df.a$geovis_3d_exposure)
 df.a$satellite_exposure <- ifelse(df.a$satellite_exposure == " ", NA, df.a$satellite_exposure)
+
+# Recoding _exposure variables
+df.a$photo_exposure[df.a$photo_exposure == "never"] <- 1
+df.a$photo_exposure[df.a$photo_exposure == "daily"] <- 5
+# photo_exposure
+df.a$carto_gis_exposure[df.a$carto_gis_exposure == "never"] <- 1
+df.a$carto_gis_exposure[df.a$carto_gis_exposure == "daily"] <- 5
+# carto_gis_exposure
+df.a$geovis_3d_exposure[df.a$geovis_3d_exposure == "never"] <- 1
+df.a$geovis_3d_exposure[df.a$geovis_3d_exposure == "daily"] <- 5
+# geovis_3d_exposure
+df.a$satellite_exposure[df.a$satellite_exposure == "never"] <- 1
+df.a$satellite_exposure[df.a$satellite_exposure == "daily"] <- 5
+# satellite_exposure
+
+# Converting new values to integer
+df.a$photo_exposure <- as.integer(df.a$photo_exposure)
+df.a$carto_gis_exposure <- as.integer(df.a$carto_gis_exposure)
+df.a$geovis_3d_exposure <- as.integer(df.a$geovis_3d_exposure)
+df.a$satellite_exposure <- as.integer(df.a$satellite_exposure)
+
+# Adding values by row
+df.a$expertise_sum <- rowSums(df.a[, 12:19], na.rm = TRUE)
+
+# Regrouping categories
+df.a$expertise[df.a$expertise_sum >= 1 & df.a$expertise_sum <= 10] <- 1
+df.a$expertise[df.a$expertise_sum >= 11 & df.a$expertise_sum <= 20] <- 2
+df.a$expertise[df.a$expertise_sum >= 21 & df.a$expertise_sum <= 30] <- 3
+df.a$expertise[df.a$expertise_sum >= 31 & df.a$expertise_sum <= 40] <- 4
+df.a$expertise[df.a$expertise_sum >= 41 & df.a$expertise_sum <= 50] <- 5
+df.a$expertise[df.a$expertise_sum == 0] <- "NA"
 ```
 
-Creating all-in-one df for analysis and viz
+Creating all-in-one df for analysis and viz.
 
 ```{r}
 df <- rbind(df.j, df.g, df.v, df.a)
@@ -383,12 +526,12 @@ df <- rbind(df.j, df.g, df.v, df.a)
 The code in this RMarkdown is linted with the [lintr package](https://github.com/jimhester/lintr), which is based on the [tidyverse style guide](http://style.tidyverse.org/).
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE, results='hide'}
-lintr::lint("main.Rmd", linters =
-              lintr::with_defaults(
-                commented_code_linter = NULL,
-                trailing_whitespace_linter = NULL
-                )
-            )
+# lintr::lint("main.Rmd", linters =
+#               lintr::with_defaults(
+#                 commented_code_linter = NULL,
+#                 trailing_whitespace_linter = NULL
+#                 )
+#             )
 # if you have additional scripts and want them to be linted too, add them here
 # lintr::lint("scripts/my_script.R")
 ```
