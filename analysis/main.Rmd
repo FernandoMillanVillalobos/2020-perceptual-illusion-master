@@ -192,6 +192,12 @@ knitr::read_chunk("scripts/label_log10.R")
 source("scripts/label_log10.R")
 ```
 
+## Theme
+
+```{r}
+theme_set(theme_cowplot(font_size = 11))
+```
+
 # Data Wrangling
 
 Importing datasets.
