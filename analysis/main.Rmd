@@ -219,6 +219,9 @@ df.a <- janitor::clean_names(df.a)
 Cleaning Julien's ds variables.
 
 ```{r cleaning_j}
+# Values to lowercase
+df.j$srm <- unlist(lapply(df.j$srm, tolower))
+
 # Regrouping hours_sleep bottom and top categories
 df.j$hours_sleep[df.j$hours_sleep == "<3"] <- "less_than_3"
 df.j$hours_sleep[df.j$hours_sleep == ">8"] <- "more_than_8"
@@ -232,7 +235,13 @@ df.j$hours_sleep[df.j$hours_sleep == "8"] <- "7-8"
 df.j$circle_below[df.j$circle_below == ""] <- NA 
 df.j$circle_above[df.j$circle_above == ""] <- NA
 
-# Recoding geovis_3d_exposure and satellite_exposure variables
+# Recoding srm, geovis_3d_exposure and satellite_exposure variables
+df.j$srm[df.j$srm == "never"] <- 1
+df.j$srm[df.j$srm == "rarely"] <- 2
+df.j$srm[df.j$srm == "occassionally"] <- 3
+df.j$srm[df.j$srm == "often"] <- 4
+df.j$srm[df.j$srm == "daily"] <- 5
+# srm
 df.j$geovis_3d_exposure[df.j$geovis_3d_exposure == "never"] <- 1
 df.j$geovis_3d_exposure[df.j$geovis_3d_exposure == "rarely"] <- 2
 df.j$geovis_3d_exposure[df.j$geovis_3d_exposure == "occassionally"] <- 3
@@ -246,24 +255,13 @@ df.j$satellite_exposure[df.j$satellite_exposure == "often"] <- 4
 df.j$satellite_exposure[df.j$satellite_exposure == "daily"] <- 5
 # satellite_exposure
 
-# Converting new values to integer
-df.j$geovis_3d_exposure <- as.integer(df.j$geovis_3d_exposure)
-df.j$satellite_exposure <- as.integer(df.j$satellite_exposure)
+# Adding an expertise var based on srm
+df.j$expertise[df.j$srm <= 2] <- "no_experience"
+df.j$expertise[df.j$srm >= 2 & df.j$srm <= 4] <- "some_experience"
 
-# Adding values by row
-df.j$expertise_sum <- rowSums(df.j[, 12:19], na.rm = TRUE)
-
-# Regrouping categories
-df.j$expertise[df.j$expertise_sum >= 1 & df.j$expertise_sum <= 10] <- 1
-df.j$expertise[df.j$expertise_sum >= 11 & df.j$expertise_sum <= 20] <- 2
-df.j$expertise[df.j$expertise_sum >= 21 & df.j$expertise_sum <= 30] <- 3
-df.j$expertise[df.j$expertise_sum >= 31 & df.j$expertise_sum <= 40] <- 4
-df.j$expertise[df.j$expertise_sum >= 41 & df.j$expertise_sum <= 50] <- 5
-df.j$expertise[df.j$expertise_sum == 0] <- "NA"
-
-#Reordering variables
-df.j <- df.j %>% 
-  select(1:19, expertise_sum, expertise, mask, circle_below, circle_above,23:74)
+# Reordering variables
+df.j <- df.j %>%
+select(1:12, expertise, 13:20, mask, circle_below, circle_above,24:73)
 ```
 
 Cleaning Gianna's ds variables.
@@ -306,7 +304,7 @@ df.g <- transform(df.g,
                  shapes_08 = NA,
                  shapes_09 = NA,
                  shapes_10 = NA,
-                 expertise_sum = NA,
+                 srm = NA,
                  expertise = NA)
 
 # Reordering variables
