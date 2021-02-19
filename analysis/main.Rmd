@@ -333,7 +333,7 @@ df.g$hours_sleep[df.g$hours_sleep == "7"] <- "7-8"
 df.g$hours_sleep[df.g$hours_sleep == "8"] <- "7-8"
 
 # Values to lowercase
-df.g[, 16:19] <- apply(df.g[, 16:19], 2, tolower)
+df.g[, 18:22] <- apply(df.g[, 18:22], 2, tolower)
 df.g$color_blindness <- unlist(lapply(df.g$color_blindness, tolower))
 
 # Recoding _exposure variables
@@ -368,16 +368,9 @@ df.g$carto_gis_exposure <- as.integer(df.g$carto_gis_exposure)
 df.g$geovis_3d_exposure <- as.integer(df.g$geovis_3d_exposure)
 df.g$satellite_exposure <- as.integer(df.g$satellite_exposure)
 
-# Adding values by row
-df.g$expertise_sum <- rowSums(df.g[, 12:19], na.rm = TRUE)
-
-# Regrouping categories
-df.g$expertise[df.g$expertise_sum >= 1 & df.g$expertise_sum <= 10] <- 1
-df.g$expertise[df.g$expertise_sum >= 11 & df.g$expertise_sum <= 20] <- 2
-df.g$expertise[df.g$expertise_sum >= 21 & df.g$expertise_sum <= 30] <- 3
-df.g$expertise[df.g$expertise_sum >= 31 & df.g$expertise_sum <= 40] <- 4
-df.g$expertise[df.g$expertise_sum >= 41 & df.g$expertise_sum <= 50] <- 5
-df.g$expertise[df.g$expertise_sum == 0] <- "NA"
+# Adding an expertise var based on maps and/or satellite exposure
+df.g$expertise[df.g$carto_gis_exposure <= 3 | df.g$geovis_3d_exposure <= 3 | df.g$satellite_exposure <= 3] <- "no_experience"
+df.g$expertise[df.g$carto_gis_exposure > 3 | df.g$geovis_3d_exposure > 3 | df.g$satellite_exposure > 3] <- "some_experience"
 ```
 
 Cleaning Victoria's ds variables.
