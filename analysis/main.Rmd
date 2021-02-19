@@ -304,11 +304,7 @@ df.g <- transform(df.g,
                  shapes_08 = NA,
                  shapes_09 = NA,
                  shapes_10 = NA,
-                 srm = NA,
-                 expertise = NA)
-
-# Reordering variables
-df.g <- df.g[, names(df.j)]
+                 srm = NA)
 
 # Recoding education variable
 df.g$education[df.g$education == "University: Bachelor degree or equivalent"] <- "bachelor"
@@ -371,6 +367,9 @@ df.g$satellite_exposure <- as.integer(df.g$satellite_exposure)
 # Adding an expertise var based on maps and/or satellite exposure
 df.g$expertise[df.g$carto_gis_exposure <= 3 | df.g$geovis_3d_exposure <= 3 | df.g$satellite_exposure <= 3] <- "no_experience"
 df.g$expertise[df.g$carto_gis_exposure > 3 | df.g$geovis_3d_exposure > 3 | df.g$satellite_exposure > 3] <- "some_experience"
+
+# Reordering variables
+df.g <- df.g[, names(df.j)]
 ```
 
 Cleaning Victoria's ds variables.
@@ -378,11 +377,7 @@ Cleaning Victoria's ds variables.
 ```{r cleaning_v}
 # Adding variables
 df.v$hemisphere <- "southern"
-df.v$expertise_sum <- "NA"
-df.v$expertise <- "NA"
-
-# Reordering variables
-df.v <- df.v[, names(df.j)]
+df.v$srm <- "NA"
 
 # Regrouping age_group category
 df.v$age_group[df.v$age_group <= "29"] <- "20-29"
@@ -422,16 +417,15 @@ df.v$carto_gis_exposure <- as.integer(df.v$carto_gis_exposure)
 df.v$geovis_3d_exposure <- as.integer(df.v$geovis_3d_exposure)
 df.v$satellite_exposure <- as.integer(df.v$satellite_exposure)
 
-# Adding values by row
-df.v$expertise_sum <- rowSums(df.v[, 12:19], na.rm = TRUE)
+# Calculating the expertise mean for every participant
+df.v$expertise_mean <- rowSums(df.v[, 14:21], na.rm = TRUE) / 4
 
-# Regrouping categories
-df.v$expertise[df.v$expertise_sum >= 1 & df.v$expertise_sum <= 10] <- 1
-df.v$expertise[df.v$expertise_sum >= 11 & df.v$expertise_sum <= 20] <- 2
-df.v$expertise[df.v$expertise_sum >= 21 & df.v$expertise_sum <= 30] <- 3
-df.v$expertise[df.v$expertise_sum >= 31 & df.v$expertise_sum <= 40] <- 4
-df.v$expertise[df.v$expertise_sum >= 41 & df.v$expertise_sum <= 50] <- 5
-df.v$expertise[df.v$expertise_sum == 0] <- "NA"
+# Adding an expertise var based the expertise mean
+df.v$expertise[df.v$expertise_mean < 4] <- "no_experience"
+df.v$expertise[df.v$expertise_mean >= 4] <- "some_experience"
+
+# Reordering variables
+df.v <- df.v[, names(df.j)]
 ```
 
 Cleaning Amy's ds variables.
@@ -439,11 +433,7 @@ Cleaning Amy's ds variables.
 ```{r cleaning_a}
 # Adding hemisphere variable
 df.a$hemisphere <- "southern"
-df.a$expertise_sum <- "NA"
-df.a$expertise <- "NA"
-
-# Reordering variables
-df.a <- df.a[, names(df.j)]
+df.a$srm <- "NA"
 
 # Regrouping age_group category
 df.a$age_group[df.a$age_group <= "19"] <- "10-19"
@@ -467,6 +457,7 @@ df.a$hours_sleep[df.a$hours_sleep == "more than 8"] <- "more_than_8" # recoding
 # Values to lowercase
 df.a$art_light_r_w <- unlist(lapply(df.a$art_light_r_w, tolower))
 df.a$light_dir_r_s <- unlist(lapply(df.a$light_dir_r_s, tolower))
+df.a$color_blindness <- unlist(lapply(df.a$color_blindness, tolower))
 
 # Filling empty values for exposure variables
 df.a$photo_exposure <- ifelse(df.a$photo_exposure == " ", NA, df.a$satellite_exposure)
@@ -494,16 +485,15 @@ df.a$carto_gis_exposure <- as.integer(df.a$carto_gis_exposure)
 df.a$geovis_3d_exposure <- as.integer(df.a$geovis_3d_exposure)
 df.a$satellite_exposure <- as.integer(df.a$satellite_exposure)
 
-# Adding values by row
-df.a$expertise_sum <- rowSums(df.a[, 12:19], na.rm = TRUE)
+# Calculating the expertise mean for every participant
+df.a$expertise_mean <- rowSums(df.a[, 14:21], na.rm = TRUE) / 4
 
-# Regrouping categories
-df.a$expertise[df.a$expertise_sum >= 1 & df.a$expertise_sum <= 10] <- 1
-df.a$expertise[df.a$expertise_sum >= 11 & df.a$expertise_sum <= 20] <- 2
-df.a$expertise[df.a$expertise_sum >= 21 & df.a$expertise_sum <= 30] <- 3
-df.a$expertise[df.a$expertise_sum >= 31 & df.a$expertise_sum <= 40] <- 4
-df.a$expertise[df.a$expertise_sum >= 41 & df.a$expertise_sum <= 50] <- 5
-df.a$expertise[df.a$expertise_sum == 0] <- "NA"
+# Adding an expertise var based the expertise mean
+df.a$expertise[df.a$expertise_mean < 4] <- "no_experience"
+df.a$expertise[df.a$expertise_mean >= 4] <- "some_experience"
+
+# Reordering variables
+df.a <- df.a[, names(df.j)]
 ```
 
 Creating all-in-one df for analysis and viz.
