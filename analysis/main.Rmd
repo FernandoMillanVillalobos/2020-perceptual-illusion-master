@@ -129,7 +129,8 @@ library(sf) # spatial data handling
 library(rmarkdown)
 library(cowplot) # theme
 library(extrafont) # fonts
-library(waldo) # compare 
+library(waldo) # compare
+library(likert) # likert scales  
 library(janitor)", # names  
 file = "manifest.R")
 ```
@@ -496,11 +497,14 @@ df.a$expertise[df.a$expertise_mean >= 4] <- "some_experience"
 df.a <- df.a[, names(df.j)]
 ```
 
-Creating all-in-one df for analysis and viz.
+Creating and reshaping all-in-one df.
 
 ```{r}
-df <- rbind(df.j, df.g, df.v, df.a)
+# Creating all-in-one wide df
+df_wide <- rbind(df.j, df.g, df.v, df.a)
 ```
+
+# Data Analysis
 
 # Linting
 
