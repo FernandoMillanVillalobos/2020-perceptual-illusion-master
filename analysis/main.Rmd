@@ -500,7 +500,7 @@ df.a <- df.a[, names(df.j)]
 
 Creating all-in-one df for analysis and viz.
 
-```{r}
+```{r wide_to_long}
 # Creating a all-in-one wide df
 df_wide <- rbind(df.j, df.g, df.v, df.a)
 
@@ -518,10 +518,26 @@ df_long <- df_wide %>% pivot_longer(
 
 # Data Analysis
 
-Calculating accuracy and confidence.
+Setting accuracy and confidence.
 
-```{r}
+```{r accuracy_confidence}
+# Setting accuracy
+ridge_t <- df_long$landform == "r" & (df_long$respond == "4" | df_long$respond == "5")
+valley_t <- df_long$landform == "v" & (df_long$respond == "1" | df_long$respond == "2")
+df_long$accuracy <- ifelse(ridge_t | valley_t , "yes", "no")
 
+# Setting confidence
+df_long$confidence[df_long$respond == "1" | df_long$respond == "5"] <- "high_confidence"
+df_long$confidence[df_long$respond == "2" | df_long$respond == "4"] <- "low_confidence"
+df_long$confidence[df_long$respond == "3"] <- "ambiguous"
+
+# accuracy_pct <- df_long %>%
+#   filter(ds_owner == "a") %>% 
+#   group_by(confidence) %>%
+#   summarize(N = n()) %>%
+#   mutate(pct = round(N / sum(N) * 100, 1)) %>% 
+#   select(confidence, pct)
+# accuracy_pct
 ```
 
 
