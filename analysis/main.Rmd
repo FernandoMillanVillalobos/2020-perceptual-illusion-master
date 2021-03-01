@@ -130,6 +130,7 @@ library(rmarkdown)
 library(cowplot) # theme
 library(extrafont) # fonts
 library(waldo) # compare
+library(psych) # some useful funs 
 library(likert) # likert scales  
 library(janitor)", # names  
 file = "manifest.R")
@@ -211,10 +212,10 @@ df.v <- read.table("input/ignore/v_ds.csv", sep = ",", header = TRUE, check.name
 df.a <- read.table("input/ignore/a_ds.csv", sep = ",", header = TRUE, check.names = FALSE)
 
 # Cleaning variables names
-df.j <- janitor::clean_names(df.j)
-df.g <- janitor::clean_names(df.g)
-df.v <- janitor::clean_names(df.v)
-df.a <- janitor::clean_names(df.a)
+df.j <- janitor::clean_names(df.j, sep_in = NULL)
+df.g <- janitor::clean_names(df.g, sep_in = NULL)
+df.v <- janitor::clean_names(df.v, sep_in = NULL)
+df.a <- janitor::clean_names(df.a, sep_in = NULL)
 ```
 
 Cleaning Julien's ds variables.
@@ -497,14 +498,32 @@ df.a$expertise[df.a$expertise_mean >= 4] <- "some_experience"
 df.a <- df.a[, names(df.j)]
 ```
 
-Creating and reshaping all-in-one df.
+Creating all-in-one df for analysis and viz.
 
 ```{r}
-# Creating all-in-one wide df
+# Creating a all-in-one wide df
 df_wide <- rbind(df.j, df.g, df.v, df.a)
+
+# Converting numeric vars to factor
+cols <- c(35:74)
+df_wide[, cols] <- lapply(df_wide[, cols] , factor)
+
+# Reshaping from wide to long
+df_long <- df_wide %>% pivot_longer(
+  cols = q10_r000_0:q80_v135_337.5,
+  names_to = c("landform", "land_dir", "light_dir"),
+  names_pattern = "q?_(.)(.*)_(.*?..*)",
+  values_to = "respond")
 ```
 
 # Data Analysis
+
+Calculating accuracy and confidence.
+
+```{r}
+
+```
+
 
 # Linting
 
