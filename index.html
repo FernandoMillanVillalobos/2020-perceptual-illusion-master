@@ -370,7 +370,7 @@ div.tocify {
 
 <div id="notes" class="section level1" number="1">
 <h1 number="1"><span class="header-section-number">1</span> Notes</h1>
-<p>This report was generated on 2021-02-25 16:27:58. R version: 4.0.4 on x86_64-pc-linux-gnu. For this report, CRAN packages as of 2021-01-01 were used.</p>
+<p>This report was generated on 2021-03-01 14:57:19. R version: 4.0.4 on x86_64-pc-linux-gnu. For this report, CRAN packages as of 2021-01-01 were used.</p>
 <div id="r-script-data" class="section level2" number="1.1">
 <h2 number="1.1"><span class="header-section-number">1.1</span> R-Script &amp; data</h2>
 <p>The pre-processing and analysis of the data was conducted in the <a href="https://www.r-project.org/">R project for statistical computing</a>. The RMarkdown script used to generate this document can be downloaded <a href="http:fernandomillanvillalobs.github.io/2020-perceptual-illusion-master/">under this link</a>. Through executing <code>main.Rmd</code>, the herein described process can be reproduced and this document can be generated. The data and information in the data sets used for this analysis are intended for use only by persons involved in the project, therefore are not available for the general public. The html on-line version of the analysis can be accessed through this <a href="https://fernandomillanvillalobos.github.io/2020-perceptual-illusion-master/">link</a>.</p>
@@ -443,9 +443,10 @@ div.tocify {
 <span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="st">library(cowplot) # theme</span></span>
 <span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="st">library(extrafont) # fonts</span></span>
 <span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="st">library(waldo) # compare</span></span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="st">library(likert) # likert scales  </span></span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="st">library(janitor)&quot;</span>, <span class="co"># names  </span></span>
-<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a><span class="at">file =</span> <span class="st">&quot;manifest.R&quot;</span>)</span></code></pre></div>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="st">library(psych) # some useful funs </span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="st">library(likert) # likert scales  </span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a><span class="st">library(janitor)&quot;</span>, <span class="co"># names  </span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a><span class="at">file =</span> <span class="st">&quot;manifest.R&quot;</span>)</span></code></pre></div>
 </div>
 <div id="install-packages" class="section level2" number="2.2">
 <h2 number="2.2"><span class="header-section-number">2.2</span> Install packages</h2>
@@ -502,12 +503,12 @@ div.tocify {
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
 ## other attached packages:
-##  [1] janitor_2.0.1     likert_1.3.5      xtable_1.8-4      waldo_0.2.3      
-##  [5] extrafont_0.17    cowplot_1.1.1     rmarkdown_2.6     sf_0.9-6         
-##  [9] lintr_2.0.1       jsonlite_1.7.2    scales_1.1.1      forcats_0.5.0    
-## [13] stringr_1.4.0     dplyr_1.0.4       purrr_0.3.4       readr_1.4.0      
-## [17] tidyr_1.1.2       tibble_3.0.6      ggplot2_3.3.3     tidyverse_1.3.0  
-## [21] rstudioapi_0.13   checkpoint_0.4.10
+##  [1] janitor_2.0.1     likert_1.3.5      xtable_1.8-4      psych_2.0.12     
+##  [5] waldo_0.2.3       extrafont_0.17    cowplot_1.1.1     rmarkdown_2.6    
+##  [9] sf_0.9-6          lintr_2.0.1       jsonlite_1.7.2    scales_1.1.1     
+## [13] forcats_0.5.0     stringr_1.4.0     dplyr_1.0.4       purrr_0.3.4      
+## [17] readr_1.4.0       tidyr_1.1.2       tibble_3.0.6      ggplot2_3.3.3    
+## [21] tidyverse_1.3.0   rstudioapi_0.13   checkpoint_0.4.10
 ## 
 ## loaded via a namespace (and not attached):
 ##  [1] nlme_3.1-152       fs_1.5.0           lubridate_1.7.9.2  httr_1.4.2        
@@ -516,18 +517,18 @@ div.tocify {
 ## [13] withr_2.3.0        tidyselect_1.1.0   gridExtra_2.3      mnormt_2.0.2      
 ## [17] processx_3.4.5     compiler_4.0.4     extrafontdb_1.0    cli_2.3.0         
 ## [21] rvest_0.3.6        xml2_1.3.2         desc_1.2.0         classInt_0.4-3    
-## [25] psych_2.0.12       callr_3.5.1        digest_0.6.27      pkgconfig_2.0.3   
-## [29] htmltools_0.5.0    dbplyr_2.0.0       rlang_0.4.10       readxl_1.3.1      
-## [33] generics_0.1.0     magrittr_2.0.1     Rcpp_1.0.5         munsell_0.5.0     
-## [37] lifecycle_1.0.0    stringi_1.5.3      yaml_2.2.1         snakecase_0.11.0  
-## [41] plyr_1.8.6         grid_4.0.4         parallel_4.0.4     crayon_1.4.1      
-## [45] lattice_0.20-41    haven_2.3.1        hms_0.5.3          tmvnsim_1.0-2     
-## [49] knitr_1.30         ps_1.5.0           pillar_1.4.7       reshape2_1.4.4    
-## [53] reprex_0.3.0       glue_1.4.2         evaluate_0.14      rex_1.2.0         
-## [57] remotes_2.2.0      modelr_0.1.8       vctrs_0.3.6        Rttf2pt1_1.3.8    
-## [61] cellranger_1.1.0   gtable_0.3.0       assertthat_0.2.1   xfun_0.19         
-## [65] broom_0.7.3        e1071_1.7-4        cyclocomp_1.1.0    class_7.3-18      
-## [69] units_0.6-7        ellipsis_0.3.1</code></pre>
+## [25] callr_3.5.1        digest_0.6.27      pkgconfig_2.0.3    htmltools_0.5.0   
+## [29] dbplyr_2.0.0       rlang_0.4.10       readxl_1.3.1       generics_0.1.0    
+## [33] magrittr_2.0.1     Rcpp_1.0.5         munsell_0.5.0      lifecycle_1.0.0   
+## [37] stringi_1.5.3      yaml_2.2.1         snakecase_0.11.0   plyr_1.8.6        
+## [41] grid_4.0.4         parallel_4.0.4     crayon_1.4.1       lattice_0.20-41   
+## [45] haven_2.3.1        hms_0.5.3          tmvnsim_1.0-2      knitr_1.30        
+## [49] ps_1.5.0           pillar_1.4.7       reshape2_1.4.4     reprex_0.3.0      
+## [53] glue_1.4.2         evaluate_0.14      rex_1.2.0          remotes_2.2.0     
+## [57] modelr_0.1.8       vctrs_0.3.6        Rttf2pt1_1.3.8     cellranger_1.1.0  
+## [61] gtable_0.3.0       assertthat_0.2.1   xfun_0.19          broom_0.7.3       
+## [65] e1071_1.7-4        cyclocomp_1.1.0    class_7.3-18       units_0.6-7       
+## [69] ellipsis_0.3.1</code></pre>
 </div>
 <div id="load-additional-scripts" class="section level2" number="2.4">
 <h2 number="2.4"><span class="header-section-number">2.4</span> Load additional scripts</h2>
@@ -560,10 +561,10 @@ div.tocify {
 <span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>df.a <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="st">&quot;input/ignore/a_ds.csv&quot;</span>, <span class="at">sep =</span> <span class="st">&quot;,&quot;</span>, <span class="at">header =</span> <span class="cn">TRUE</span>, <span class="at">check.names =</span> <span class="cn">FALSE</span>)</span>
 <span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Cleaning variables names</span></span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>df.j <span class="ot">&lt;-</span> janitor<span class="sc">::</span><span class="fu">clean_names</span>(df.j)</span>
-<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>df.g <span class="ot">&lt;-</span> janitor<span class="sc">::</span><span class="fu">clean_names</span>(df.g)</span>
-<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>df.v <span class="ot">&lt;-</span> janitor<span class="sc">::</span><span class="fu">clean_names</span>(df.v)</span>
-<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>df.a <span class="ot">&lt;-</span> janitor<span class="sc">::</span><span class="fu">clean_names</span>(df.a)</span></code></pre></div>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>df.j <span class="ot">&lt;-</span> janitor<span class="sc">::</span><span class="fu">clean_names</span>(df.j, <span class="at">sep_in =</span> <span class="cn">NULL</span>)</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>df.g <span class="ot">&lt;-</span> janitor<span class="sc">::</span><span class="fu">clean_names</span>(df.g, <span class="at">sep_in =</span> <span class="cn">NULL</span>)</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>df.v <span class="ot">&lt;-</span> janitor<span class="sc">::</span><span class="fu">clean_names</span>(df.v, <span class="at">sep_in =</span> <span class="cn">NULL</span>)</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>df.a <span class="ot">&lt;-</span> janitor<span class="sc">::</span><span class="fu">clean_names</span>(df.a, <span class="at">sep_in =</span> <span class="cn">NULL</span>)</span></code></pre></div>
 <p>Cleaning Julien’s ds variables.</p>
 <div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Values to lowercase</span></span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>df.j<span class="sc">$</span>srm <span class="ot">&lt;-</span> <span class="fu">unlist</span>(<span class="fu">lapply</span>(df.j<span class="sc">$</span>srm, tolower))</span>
@@ -828,24 +829,54 @@ div.tocify {
 <span id="cb25-61"><a href="#cb25-61" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb25-62"><a href="#cb25-62" aria-hidden="true" tabindex="-1"></a><span class="co"># Reordering variables</span></span>
 <span id="cb25-63"><a href="#cb25-63" aria-hidden="true" tabindex="-1"></a>df.a <span class="ot">&lt;-</span> df.a[, <span class="fu">names</span>(df.j)]</span></code></pre></div>
-<p>Creating and reshaping all-in-one df.</p>
-<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Creating all-in-one wide df</span></span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>df_wide <span class="ot">&lt;-</span> <span class="fu">rbind</span>(df.j, df.g, df.v, df.a)</span></code></pre></div>
+<p>Creating all-in-one df for analysis and viz.</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Creating a all-in-one wide df</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>df_wide <span class="ot">&lt;-</span> <span class="fu">rbind</span>(df.j, df.g, df.v, df.a)</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Converting numeric vars to factor</span></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>cols <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">35</span><span class="sc">:</span><span class="dv">74</span>)</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>df_wide[, cols] <span class="ot">&lt;-</span> <span class="fu">lapply</span>(df_wide[, cols] , factor)</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Reshaping from wide to long</span></span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>df_long <span class="ot">&lt;-</span> df_wide <span class="sc">%&gt;%</span> <span class="fu">pivot_longer</span>(</span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">cols =</span> q10_r000_0<span class="sc">:</span>q80_v135_337<span class="fl">.5</span>,</span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">names_to =</span> <span class="fu">c</span>(<span class="st">&quot;landform&quot;</span>, <span class="st">&quot;land_dir&quot;</span>, <span class="st">&quot;light_dir&quot;</span>),</span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">names_pattern =</span> <span class="st">&quot;q?_(.)(.*)_(.*?..*)&quot;</span>,</span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">values_to =</span> <span class="st">&quot;respond&quot;</span>)</span></code></pre></div>
 </div>
 <div id="data-analysis" class="section level1" number="4">
 <h1 number="4"><span class="header-section-number">4</span> Data Analysis</h1>
+<p>Setting accuracy and confidence.</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Setting accuracy</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>ridge_t <span class="ot">&lt;-</span> df_long<span class="sc">$</span>landform <span class="sc">==</span> <span class="st">&quot;r&quot;</span> <span class="sc">&amp;</span> (df_long<span class="sc">$</span>respond <span class="sc">==</span> <span class="st">&quot;4&quot;</span> <span class="sc">|</span> df_long<span class="sc">$</span>respond <span class="sc">==</span> <span class="st">&quot;5&quot;</span>)</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>valley_t <span class="ot">&lt;-</span> df_long<span class="sc">$</span>landform <span class="sc">==</span> <span class="st">&quot;v&quot;</span> <span class="sc">&amp;</span> (df_long<span class="sc">$</span>respond <span class="sc">==</span> <span class="st">&quot;1&quot;</span> <span class="sc">|</span> df_long<span class="sc">$</span>respond <span class="sc">==</span> <span class="st">&quot;2&quot;</span>)</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>df_long<span class="sc">$</span>accuracy <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(ridge_t <span class="sc">|</span> valley_t , <span class="st">&quot;yes&quot;</span>, <span class="st">&quot;no&quot;</span>)</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Setting confidence</span></span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>df_long<span class="sc">$</span>confidence[df_long<span class="sc">$</span>respond <span class="sc">==</span> <span class="st">&quot;1&quot;</span> <span class="sc">|</span> df_long<span class="sc">$</span>respond <span class="sc">==</span> <span class="st">&quot;5&quot;</span>] <span class="ot">&lt;-</span> <span class="st">&quot;high_confidence&quot;</span></span></code></pre></div>
+<pre><code>## Warning: Unknown or uninitialised column: `confidence`.</code></pre>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>df_long<span class="sc">$</span>confidence[df_long<span class="sc">$</span>respond <span class="sc">==</span> <span class="st">&quot;2&quot;</span> <span class="sc">|</span> df_long<span class="sc">$</span>respond <span class="sc">==</span> <span class="st">&quot;4&quot;</span>] <span class="ot">&lt;-</span> <span class="st">&quot;low_confidence&quot;</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>df_long<span class="sc">$</span>confidence[df_long<span class="sc">$</span>respond <span class="sc">==</span> <span class="st">&quot;3&quot;</span>] <span class="ot">&lt;-</span> <span class="st">&quot;ambiguous&quot;</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="co"># accuracy_pct &lt;- df_long %&gt;%</span></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a><span class="co">#   filter(ds_owner == &quot;a&quot;) %&gt;% </span></span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a><span class="co">#   group_by(confidence) %&gt;%</span></span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a><span class="co">#   summarize(N = n()) %&gt;%</span></span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a><span class="co">#   mutate(pct = round(N / sum(N) * 100, 1)) %&gt;% </span></span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a><span class="co">#   select(confidence, pct)</span></span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a><span class="co"># accuracy_pct</span></span></code></pre></div>
 </div>
 <div id="linting" class="section level1" number="5">
 <h1 number="5"><span class="header-section-number">5</span> Linting</h1>
 <p>The code in this RMarkdown is linted with the <a href="https://github.com/jimhester/lintr">lintr package</a>, which is based on the <a href="http://style.tidyverse.org/">tidyverse style guide</a>.</p>
-<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># lintr::lint(&quot;main.Rmd&quot;, linters =</span></span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="co">#               lintr::with_defaults(</span></span>
-<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="co">#                 commented_code_linter = NULL,</span></span>
-<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="co">#                 trailing_whitespace_linter = NULL</span></span>
-<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a><span class="co">#                 )</span></span>
-<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a><span class="co">#             )</span></span>
-<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a><span class="co"># if you have additional scripts and want them to be linted too, add them here</span></span>
-<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a><span class="co"># lintr::lint(&quot;scripts/my_script.R&quot;)</span></span></code></pre></div>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># lintr::lint(&quot;main.Rmd&quot;, linters =</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="co">#               lintr::with_defaults(</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="co">#                 commented_code_linter = NULL,</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="co">#                 trailing_whitespace_linter = NULL</span></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a><span class="co">#                 )</span></span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a><span class="co">#             )</span></span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a><span class="co"># if you have additional scripts and want them to be linted too, add them here</span></span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a><span class="co"># lintr::lint(&quot;scripts/my_script.R&quot;)</span></span></code></pre></div>
 </div>
 
 
