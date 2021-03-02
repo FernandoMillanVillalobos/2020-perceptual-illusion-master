@@ -27,6 +27,12 @@ knit: (function(inputFile, encoding) {
   rmarkdown::render(inputFile, encoding = encoding, output_dir = "../", output_file = "index") })
 ---
 
+```{r, include=FALSE}
+knitr::opts_chunk$set(
+  echo=TRUE, message=FALSE, warning=FALSE 
+)
+```
+
 ```{r, echo=FALSE}
 # CONFIG
 user_name <- "fernandomillanvillalobos" # your Git username (only needed if
@@ -539,7 +545,6 @@ df_long$confidence[df_long$respond == "3"] <- "ambiguous"
 #   select(confidence, pct)
 # accuracy_pct
 ```
-
 
 # Linting
 
