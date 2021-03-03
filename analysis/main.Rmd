@@ -499,7 +499,7 @@ df.a$satellite_exposure <- as.integer(df.a$satellite_exposure)
 # Calculating the expertise mean for every participant
 df.a$expertise_mean <- rowSums(df.a[, 14:21], na.rm = TRUE) / 4
 
-# Adding an expertise var based the expertise mean
+# Adding an expertise var based on the expertise mean
 df.a$expertise[df.a$expertise_mean < 4] <- "no_experience"
 df.a$expertise[df.a$expertise_mean >= 4] <- "some_experience"
 
@@ -539,15 +539,63 @@ df_long$accuracy <- ifelse(ridge_t | valley_t , "yes", "no")
 df_long$confidence[df_long$respond == "1" | df_long$respond == "5"] <- "high_confidence"
 df_long$confidence[df_long$respond == "2" | df_long$respond == "4"] <- "low_confidence"
 df_long$confidence[df_long$respond == "3"] <- "ambiguous"
-
-# accuracy_pct <- df_long %>%
-#   filter(ds_owner == "a") %>% 
-#   group_by(confidence) %>%
-#   summarize(N = n()) %>%
-#   mutate(pct = round(N / sum(N) * 100, 1)) %>% 
-#   select(confidence, pct)
-# accuracy_pct
 ```
+
+## EDA
+
+Exploring accuracy.
+
+```{r eda_accuracy}
+accu_hem <- df_long %>%
+  group_by(hemisphere, accuracy) %>%
+  summarize(N = n()) %>%
+  mutate(pct = round(N / sum(N) * 100, 1)) %>%
+  select(accuracy, pct)
+accu_hem
+
+p <- ggplot(accu_hem, aes(x = accuracy, y = pct, fill = hemisphere))
+p + geom_bar(stat = "identity", position = "dodge2")
+
+accu_hem_degrees <- df_long %>%
+  group_by(hemisphere, accuracy, light_dir) %>%
+  summarize(N = n()) %>%
+  mutate(pct = round(N / sum(N) * 100, 1)) %>%
+  select(accuracy, light_dir, pct)
+accu_hem_degrees
+
+p <- ggplot(accu_hem_degrees, aes(x = light_dir, y = pct, fill = hemisphere))
+p + geom_bar(stat = "identity", position = "dodge2") +
+  facet_grid(~ accuracy) +
+  coord_flip()
+```
+Exploring confidence.
+
+```{r eda_confidence}
+confi_hem <- df_long %>%
+  group_by(hemisphere, confidence) %>%
+  summarize(N = n()) %>%
+  mutate(pct = round(N / sum(N) * 100, 1)) %>%
+  select(confidence, pct)
+confi_hem
+
+p <- ggplot(confi_hem, aes(x = confidence, y = pct, fill = hemisphere))
+p + geom_bar(stat = "identity", position = "dodge2")
+
+p <- ggplot(confi_hem, aes(x = hemisphere, y = pct, fill = confidence))
+p + geom_bar(stat = "identity", color = "gray80") +
+  coord_flip()
+```
+Confidence vs accuracy per respond.
+
+```{r}
+confi_accu <- df_long %>%
+  group_by(land_dir, light_dir, accuracy, confidence) %>%
+  summarize(N = n()) %>%
+  mutate(pct = round(N / sum(N) * 100, 1)) %>%
+  select(land_dir, light_dir, confidence, pct)
+confi_accu
+```
+
 
 # Linting
 
