@@ -535,10 +535,18 @@ ridge_t <- df_long$landform == "r" & (df_long$respond == "4" | df_long$respond =
 valley_t <- df_long$landform == "v" & (df_long$respond == "1" | df_long$respond == "2")
 df_long$accuracy <- ifelse(ridge_t | valley_t , "yes", "no")
 
-# Setting confidence
+# Setting accuracy score
+df_long$accuracy_score <- ifelse(df_long$respond == "1" | df_long$respond == "5", 1, 0)
+
+# Setting confidence (out of 40)
 df_long$confidence[df_long$respond == "1" | df_long$respond == "5"] <- "high_confidence"
 df_long$confidence[df_long$respond == "2" | df_long$respond == "4"] <- "low_confidence"
 df_long$confidence[df_long$respond == "3"] <- "ambiguous"
+
+# Setting confidence score (out of 80)
+df_long$confidence_score[df_long$respond == "1" | df_long$respond == "5"] <- 2
+df_long$confidence_score[df_long$respond == "2" | df_long$respond == "4"] <- 1
+df_long$confidence_score[df_long$respond == "3"] <- 0
 ```
 
 ## EDA
