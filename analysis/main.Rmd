@@ -596,15 +596,56 @@ p + geom_bar(stat = "identity", color = "gray80") +
 Confidence vs accuracy per respond.
 
 ```{r}
-confi_accu <- df_long %>%
-  group_by(land_dir, light_dir, accuracy, confidence) %>%
+#  Setting accuracy per respond
+accu_right_resp_degrees <- df_long %>%
+  group_by(land_dir, light_dir, accuracy) %>% 
+  summarize(N = n()) %>% 
+  mutate(pct_accu_right = round(N / sum(N) * 100, 1)) %>% 
+  filter(accuracy == "yes") %>% 
+  select(-c(accuracy, N))
+
+accu_wrong_resp_degrees <- df_long %>%
+  group_by(land_dir, light_dir, accuracy) %>%
   summarize(N = n()) %>%
-  mutate(pct = round(N / sum(N) * 100, 1)) %>%
-  select(land_dir, light_dir, confidence, pct)
-confi_accu
+  mutate(pct_accu_wrong = round(N / sum(N) * 100, 1)) %>%
+  filter(accuracy == "no") %>%
+  select(-c(accuracy, N))
+
+accu <- left_join(accu_right_resp_degrees, accu_wrong_resp_degrees, by = c("land_dir", "light_dir"))
+
+#  Setting confidence per respond
+confi_high_resp_degrees <- df_long %>%
+  group_by(land_dir, light_dir, confidence) %>%
+  summarize(N = n()) %>%
+  mutate(pct_high_confi = round(N / sum(N) * 100, 1)) %>%
+  filter(confidence == "high_confidence") %>%
+  select(-c(confidence, N))
+
+confi_low_resp_degrees <- df_long %>%
+  group_by(land_dir, light_dir, confidence) %>%
+  summarize(N = n()) %>%
+  mutate(pct_low_confi = round(N / sum(N) * 100, 1)) %>%
+  filter(confidence == "low_confidence") %>%
+  select(-c(confidence, N))
+
+confi_amb_resp_degrees <- df_long %>%
+  group_by(land_dir, light_dir, confidence) %>%
+  summarize(N = n()) %>%
+  mutate(pct_amb_confi = round(N / sum(N) * 100, 1)) %>%
+  filter(confidence == "ambiguous") %>%
+  select(-c(confidence, N))
+
+confi1 <- left_join(confi_high_resp_degrees, confi_low_resp_degrees, by = c("land_dir", "light_dir"))
+confi2 <- left_join(confi1, confi_amb_resp_degrees, by = c("land_dir", "light_dir"))
+accu_confi <- left_join(accu, confi2, by = c("land_dir", "light_dir"))
+
+
+p1 <- ggplot(accu_confi, aes(x = pct_accu_right, y = pct_high_confi, color = light_dir))
+p1 + geom_point()
+
+p2 <- ggplot(accu_confi, aes(x = pct_accu_right, y = pct_low_confi, color = light_dir))
+p2 + geom_point()
 ```
-
-
 # Linting
 
 The code in this RMarkdown is linted with the [lintr package](https://github.com/jimhester/lintr), which is based on the [tidyverse style guide](http://style.tidyverse.org/).
