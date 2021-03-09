@@ -809,7 +809,7 @@ p + geom_bar(stat = "identity", color = "gray80") +
     theme(legend.position = "top") +
     coord_flip()
 ```
-Confidence vs accuracy per respond.
+### Confidence vs accuracy per respond.
 
 ```{r}
 #  Setting accuracy per respond
@@ -855,14 +855,39 @@ confi1 <- left_join(confi_high_resp_degrees, confi_low_resp_degrees, by = c("lan
 confi2 <- left_join(confi1, confi_amb_resp_degrees, by = c("land_dir", "light_dir"))
 accu_confi <- left_join(accu, confi2, by = c("land_dir", "light_dir"))
 
+# Plotting correct accuracy vs high confidence
+p <- ggplot(accu_confi, aes(x = pct_accu_right, y = pct_high_confi, color = light_dir, label = light_dir))
+p + geom_point(size = 2.5) +
+    geom_jitter() +
+    scale_color_brewer(type = "seq", palette = "Dark2") +
+    scale_x_continuous(labels = scales::percent_format(accuracy = TRUE, scale = 1), limits = c(40, 100), breaks = seq(40, 100, 10)) +
+    scale_y_continuous(labels = scales::percent_format(accuracy = TRUE, scale = 1), limits = c(40, 100), breaks = seq(40, 100, 10)) +
+    labs(x = "Mean Accuracy Correct",
+         y = "Mean Confidence High",
+         title = "Correct responses vs high level of confidence per respond",
+         subtitle = "Showing the relation between all the correct responds for accuracy and high confidence per light direction degree",
+         color = "Light Direction Degree") +
+    theme(legend.position = "top")
 
-p1 <- ggplot(accu_confi, aes(x = pct_accu_right, y = pct_high_confi, color = light_dir))
-p1 + geom_point()
+# Plotting correct accuracy vs high confidence with 337.5 and 315 light direction degrees hightlighted
+color_degrees <- c("#2E74C0", "#CB454A")
 
-p2 <- ggplot(accu_confi, aes(x = pct_accu_right, y = pct_low_confi, color = light_dir))
-p2 + geom_point()
+p <- ggplot(accu_confi, aes(x = pct_accu_right, y = pct_high_confi, label = light_dir))
+p + geom_point(size = 2.5, alpha = .07, color = "gray50") +
+    geom_jitter(size = 2.5, alpha = .07, color = "gray50") +
+    geom_point(data = subset(accu_confi, light_dir == "337.5"), aes(x = pct_accu_right, y = pct_high_confi, color = light_dir), size = 2.5) +
+    geom_point(data = subset(accu_confi, light_dir == "315"), aes(x = pct_accu_right, y = pct_high_confi, color = light_dir), size = 2.5) +
+    scale_color_manual(values = color_degrees) +
+    scale_x_continuous(labels = scales::percent_format(accuracy = TRUE, scale = 1), limits = c(40, 100), breaks = seq(40, 100, 10)) +
+    scale_y_continuous(labels = scales::percent_format(accuracy = TRUE, scale = 1), limits = c(40, 100), breaks = seq(40, 100, 10)) +
+    geom_text_repel(data = subset(accu_confi, light_dir == "337.5" | light_dir == "315"), aes(x = pct_accu_right, y = pct_high_confi, label = light_dir), size = 2) +
+    labs(x = "Mean Accuracy Correct",
+         y = "Mean Confidence High",
+         title = "Correct responses vs high level of confidence per respond",
+         subtitle = "Showing the relation between all the correct responds for accuracy and high confidence per light direction degree",
+         color = "Light Direction Degree") +
+    theme(legend.position = "top")
 ```
-
 # Linting
 
 The code in this RMarkdown is linted with the [lintr package](https://github.com/jimhester/lintr), which is based on the [tidyverse style guide](http://style.tidyverse.org/).
