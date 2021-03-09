@@ -304,6 +304,7 @@ df.g <- transform(df.g,
                  carto_gis_training = NA,
                  geovis_3d_training = NA,
                  satellite_training = NA,
+                 expertise = NA,
                  circle_below = NA,
                  circle_above = NA,
                  shapes_01 = NA,
@@ -341,7 +342,7 @@ df.g$hours_sleep[df.g$hours_sleep == "7"] <- "7-8"
 df.g$hours_sleep[df.g$hours_sleep == "8"] <- "7-8"
 
 # Values to lowercase
-df.g[, 18:22] <- apply(df.g[, 18:22], 2, tolower)
+df.g[, 10:14] <- apply(df.g[, 10:14], 2, tolower)
 df.g$color_blindness <- unlist(lapply(df.g$color_blindness, tolower))
 
 # Recoding _exposure variables
@@ -390,6 +391,7 @@ Cleaning Victoria's ds variables.
 # Adding variables
 df.v$hemisphere <- "southern"
 df.v$srm <- "NA"
+df.v$expertise <- "NA"
 
 # Regrouping age_group category
 df.v$age_group[df.v$age_group <= "29"] <- "20-29"
@@ -446,6 +448,7 @@ Cleaning Amy's ds variables.
 # Adding hemisphere variable
 df.a$hemisphere <- "southern"
 df.a$srm <- "NA"
+df.a$expertise <- "NA"
 
 # Regrouping age_group category
 df.a$age_group[df.a$age_group <= "19"] <- "10-19"
@@ -540,6 +543,7 @@ df_long$accuracy <- ifelse(ridge_t | valley_t , "yes", "no")
 df_long$accuracy_score <- ifelse(df_long$respond == "1" | df_long$respond == "5", 1, 0)
 
 # Setting confidence (out of 40)
+df_long$confidence <- "NA"
 df_long$confidence[df_long$respond == "1" | df_long$respond == "5"] <- "high_confidence"
 df_long$confidence[df_long$respond == "2" | df_long$respond == "4"] <- "low_confidence"
 df_long$confidence[df_long$respond == "3"] <- "ambiguous"
@@ -581,6 +585,7 @@ accu_hem_degrees <- df_long %>%
   select(accuracy, light_dir, pct)
 
 accu_hem_degrees <- within(accu_hem_degrees, light_dir <- factor(light_dir, levels = c("0", "337.5", "315", "292.5", "270")))
+accu_hem_degrees <- within(accu_hem_degrees, accuracy <- factor(accuracy, levels = c("yes", "no")))
 accu_hem_degrees$light_dir <- ordered(accu_hem_degrees$light_dir, levels = c("0", "337.5", "315", "292.5", "270")) # Converting degrees to ordered factors
 
 p <- ggplot(accu_hem_degrees, aes(x = light_dir, y = pct, fill = hemisphere, label = pct))
@@ -591,7 +596,7 @@ p + geom_bar(stat = "identity", position = "dodge2") +
      title = "Mean accuracy per hemisphere and light direction (%)") +
   scale_y_continuous(labels = scales::label_percent(scale = 1)) +
   geom_text(aes(y = pct, label = pct), position = position_dodge2(width = 1), hjust = -0.20, size = rel(3)) +
-  facet_grid(~ accuracy) +
+  facet_grid(~ accuracy, labeller = labeller(accuracy = c(`no` = "Inverse", `yes` = "Correct"))) +
   coord_flip() +
   theme(legend.position = "bottom")
 
@@ -617,9 +622,11 @@ accu_gender <- df_long %>%
   mutate(pct = round(N / sum(N) * 100, 1)) %>%
   select(gender, accuracy,pct)
 
+accu_gender <- within(accu_gender, accuracy <- factor(accuracy, levels = c("yes", "no")))  
+
 p <- ggplot(accu_gender, aes(x = gender, y = pct, fill = accuracy, label = pct))
 p + geom_bar(stat = "identity", position = "dodge2") +
-    scale_fill_brewer(type = "qual", palette = "Dark2") +
+    scale_fill_brewer(type = "qual", palette = "Dark2", labels = c("correct", "inverse")) +
     scale_y_continuous(labels = scales::label_percent(scale = 1)) +
     scale_x_discrete(labels = c("Female", "Male")) +
     labs(x = NULL, y = "Mean Accuracy",
@@ -635,14 +642,40 @@ accu_hand <- df_long %>%
   mutate(pct = round(N / sum(N) * 100, 1)) %>%
   select(handedness, accuracy,pct)
 
+accu_hand <- within(accu_hand, accuracy <- factor(accuracy, levels = c("yes", "no")))
+accu_hand <- within(accu_hand, handedness <- factor(handedness, levels = c("b", "r", "l")))
+accu_hand$handedness <- ordered(accu_hand$handedness, levels = c("r", "l", "b"))
+
+
 p <- ggplot(accu_hand, aes(x = handedness, y = pct, fill = accuracy, label = pct))
 p + geom_bar(stat = "identity", position = "dodge2") +
-    scale_fill_brewer(type = "qual", palette = "Dark2") +
+    scale_fill_brewer(type = "qual", palette = "Dark2", labels = c("correct", "inverse")) +
     scale_y_continuous(labels = scales::label_percent(scale = 1)) +
-    scale_x_discrete(labels = c("Ambidextrous", "Lefthanded", "Righthanded")) +
+    scale_x_discrete(labels = c("Righthanded", "Lefthanded", "Ambidextrous")) +
     labs(x = NULL, y = "Mean Accuracy",
          fill = "Accuracy",
          title = "Mean accuracy per handedness (%)") +
+    geom_text(aes(y = pct, label = pct), position = position_dodge2(width = 1), vjust = -0.40, size = rel(3)) +
+    theme(legend.position = "top")
+
+# Accuracy per expertise
+accu_exp <- df_long %>%
+  group_by(expertise, accuracy) %>%
+  summarize(N = n()) %>%
+  mutate(pct = round(N / sum(N) * 100, 1)) %>%
+  select(expertise, accuracy,pct)
+
+accu_exp <- within(accu_exp, accuracy <- factor(accuracy, levels = c("yes", "no")))
+accu_exp <- within(accu_exp, expertise <- factor(expertise, levels = c("some_experience", "no_experience")))
+  
+p <- ggplot(accu_exp, aes(x = expertise, y = pct, fill = accuracy, label = pct))
+p + geom_bar(stat = "identity", position = "dodge2") +
+    scale_fill_brewer(type = "qual", palette = "Dark2", labels = c("correct", "inverse")) +
+    scale_y_continuous(labels = scales::label_percent(scale = 1)) +
+    scale_x_discrete(labels = c("Some Experience", "No Experience")) +
+    labs(x = NULL, y = "Mean Accuracy",
+         fill = "Accuracy",
+         title = "Mean accuracy per expertise (%)") +
     geom_text(aes(y = pct, label = pct), position = position_dodge2(width = 1), vjust = -0.40, size = rel(3)) +
     theme(legend.position = "top")
 ```
