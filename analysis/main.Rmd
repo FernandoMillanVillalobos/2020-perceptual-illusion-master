@@ -986,16 +986,6 @@ p8 <- p8 + geom_point(size = 2.5, alpha = .07, color = "gray50") +
          color = "Light Direction Degree") +
     theme(legend.position = "top")
 
-# Showing all plots individually
-p1
-p2
-p3
-p4
-p5
-p6
-p7
-p8
-
 # Copies of all plots to use them in two grids
 p9 <- p1
 p10 <- p2
@@ -1015,6 +1005,16 @@ p13 <- p13 + labs(title = "", subtitle = "") + theme(legend.position = "none")
 p14 <- p14 + labs(title = "", subtitle = "") + theme(legend.position = "none")
 p15 <- p15 + labs(title = "", subtitle = "") + theme(legend.position = "none")
 p16 <- p16 + labs(title = "", subtitle = "") + theme(legend.position = "none")
+
+# Showing all plots individually
+p1
+p2
+p3
+p4
+p5
+p6
+p7
+p8
 
 # Building the first grid
 plot_grid(
