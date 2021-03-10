@@ -1049,5 +1049,5 @@ lintr::lint("main.Rmd", linters =
                 )
             )
 # if you have additional scripts and want them to be linted too, add them here
-lintr::lint("scripts/my_script.R")
+# lintr::lint("scripts/my_script.R")
 ```
