@@ -31,7 +31,6 @@ knit: (function(inputFile, encoding) {
 ## By defult, show code for all chunks in the knitted document,
 ## as well as the output. To override for a particular chunk
 ## use echo = FALSE in its options.
-# fig.width=8, fig.height=5
 knitr::opts_chunk$set(
    echo=TRUE, message=FALSE, warning=FALSE
 )
@@ -113,6 +112,9 @@ if (is.null(path_to_wd) | !dir.exists(path_to_wd)) {
 # suppress scientific notation
 options(scipen = 999)
 
+# suppress summarise info
+options(dplyr.summarise.inform = FALSE)
+
 # unload global rstudioapi and knitr again to avoid conflicts with checkpoint
 # this is only necessary if executed within RStudio
 # outside of RStudio, namely in the knit.sh script, this causes RMarkdown
@@ -121,7 +123,6 @@ if (Sys.getenv("RSTUDIO") == "1") {
   detach_all_packages()
 }
 ```
-
 ## Define packages
 
 ```{r, echo=TRUE, message=FALSE, warning=FALSE}
@@ -131,7 +132,7 @@ if (Sys.getenv("RSTUDIO") == "1") {
 # tidyverse: see https://blog.rstudio.org/2016/09/15/tidyverse-1-0-0/
 cat("
 library(rstudioapi)
-library(tidyverse) # ggplot2, dplyr, tidyr, readr, purrr, tibble, magrittr, readxl
+library(tidyverse, warn.conflicts = FALSE) # ggplot2, dplyr, tidyr, readr, purrr, tibble, magrittr, readxl
 library(scales) # scales for ggplot2
 library(jsonlite) # json
 library(lintr) # code linting
@@ -186,7 +187,6 @@ source("manifest.R")
 unlink("manifest.R")
 sessionInfo()
 ```
-
 ## Load additional scripts
 
 ```{r, echo=TRUE, message=FALSE, warning=FALSE}
@@ -565,7 +565,7 @@ accu_hem <- df_long %>%
   group_by(hemisphere, accuracy) %>%
   summarize(N = n()) %>%
   mutate(pct = round(N / sum(N) * 100, 1)) %>%
-  select(accuracy, pct)
+  select(accuracy, hemisphere, pct)
 
 p <- ggplot(accu_hem, aes(x = reorder(accuracy, -pct), y = pct, fill = hemisphere, label = pct))
 p + geom_bar(stat = "identity", position = "dodge2") +
@@ -809,6 +809,7 @@ p + geom_bar(stat = "identity", color = "gray80") +
     theme(legend.position = "top") +
     coord_flip()
 ```
+
 ### Confidence vs accuracy per respond.
 
 ```{r}
@@ -856,9 +857,10 @@ confi2 <- left_join(confi1, confi_amb_resp_degrees, by = c("land_dir", "light_di
 accu_confi <- left_join(accu, confi2, by = c("land_dir", "light_dir"))
 
 # Plotting correct accuracy vs high confidence
-p <- ggplot(accu_confi, aes(x = pct_accu_right, y = pct_high_confi, color = light_dir, label = light_dir))
-p + geom_point(size = 2.5) +
+p1 <- ggplot(accu_confi, aes(x = pct_accu_right, y = pct_high_confi, color = light_dir, label = light_dir))
+p1 <- p1 + geom_point(size = 2.5) +
     geom_jitter() +
+    geom_smooth(aes(x = pct_accu_right, y = pct_high_confi), method = lm, size = 1.1, color = "gray70", alpha = .2, se = TRUE, fullrange = TRUE) +
     scale_color_brewer(type = "seq", palette = "Dark2") +
     scale_x_continuous(labels = scales::percent_format(accuracy = TRUE, scale = 1), limits = c(40, 100), breaks = seq(40, 100, 10)) +
     scale_y_continuous(labels = scales::percent_format(accuracy = TRUE, scale = 1), limits = c(40, 100), breaks = seq(40, 100, 10)) +
@@ -869,11 +871,26 @@ p + geom_point(size = 2.5) +
          color = "Light Direction Degree") +
     theme(legend.position = "top")
 
-# Plotting correct accuracy vs high confidence with 337.5 and 315 light direction degrees hightlighted
+# Plotting correct accuracy vs low confidence
+p2 <- ggplot(accu_confi, aes(x = pct_accu_right, y = pct_low_confi, color = light_dir, label = light_dir))
+p2 <- p2 + geom_point(size = 2.5) +
+    geom_jitter() +
+    geom_smooth(aes(x = pct_accu_right, y = pct_low_confi), method = lm, size = 1.1, color = "gray70", alpha = .2, se = TRUE, fullrange = TRUE) +
+    scale_color_brewer(type = "seq", palette = "Dark2") +
+    scale_x_continuous(labels = scales::percent_format(accuracy = TRUE, scale = 1), limits = c(40, 100), breaks = seq(40, 100, 10)) +
+    scale_y_continuous(labels = scales::percent_format(accuracy = TRUE, scale = 1), limits = c(10, 40), breaks = seq(10, 40, 10)) +
+    labs(x = "Mean Accuracy Correct",
+         y = "Mean Confidence Low",
+         title = "Correct responses vs low level of confidence per respond",
+         subtitle = "Showing the relation between all the correct responds for accuracy and low confidence per light direction degree",
+         color = "Light Direction Degree") +
+    theme(legend.position = "top")
+
+# Plotting correct accuracy vs high confidence with 337.5 and 315 light direction degrees highlighted
 color_degrees <- c("#2E74C0", "#CB454A")
 
-p <- ggplot(accu_confi, aes(x = pct_accu_right, y = pct_high_confi, label = light_dir))
-p + geom_point(size = 2.5, alpha = .07, color = "gray50") +
+p3 <- ggplot(accu_confi, aes(x = pct_accu_right, y = pct_high_confi, label = light_dir))
+p3 <- p3 + geom_point(size = 2.5, alpha = .07, color = "gray50") +
     geom_jitter(size = 2.5, alpha = .07, color = "gray50") +
     geom_point(data = subset(accu_confi, light_dir == "337.5"), aes(x = pct_accu_right, y = pct_high_confi, color = light_dir), size = 2.5) +
     geom_point(data = subset(accu_confi, light_dir == "315"), aes(x = pct_accu_right, y = pct_high_confi, color = light_dir), size = 2.5) +
@@ -887,18 +904,66 @@ p + geom_point(size = 2.5, alpha = .07, color = "gray50") +
          subtitle = "Showing the relation between all the correct responds for accuracy and high confidence per light direction degree",
          color = "Light Direction Degree") +
     theme(legend.position = "top")
+
+# Plotting correct accuracy vs low confidence with 337.5 and 315 light direction degrees highlighted
+color_degrees <- c("#2E74C0", "#CB454A")
+
+p4 <- ggplot(accu_confi, aes(x = pct_accu_right, y = pct_low_confi, label = light_dir))
+p4 <- p4 + geom_point(size = 2.5, alpha = .07, color = "gray50") +
+    geom_jitter(size = 2.5, alpha = .07, color = "gray50") +
+    geom_point(data = subset(accu_confi, light_dir == "337.5"), aes(x = pct_accu_right, y = pct_low_confi, color = light_dir), size = 2.5) +
+    geom_point(data = subset(accu_confi, light_dir == "315"), aes(x = pct_accu_right, y = pct_low_confi, color = light_dir), size = 2.5) +
+    scale_color_manual(values = color_degrees) +
+    scale_x_continuous(labels = scales::percent_format(accuracy = TRUE, scale = 1), limits = c(40, 100), breaks = seq(40, 100, 10)) +
+    scale_y_continuous(labels = scales::percent_format(accuracy = TRUE, scale = 1), limits = c(10, 40), breaks = seq(10, 40, 10)) +
+    geom_text_repel(data = subset(accu_confi, light_dir == "337.5" | light_dir == "315"), aes(x = pct_accu_right, y = pct_low_confi, label = light_dir), size = 2) +
+    labs(x = "Mean Accuracy Correct",
+         y = "Mean Confidence Low",
+         title = "Correct responses vs low level of confidence per respond",
+         subtitle = "Showing the relation between all the correct responds for accuracy and low confidence per light direction degree",
+         color = "Light Direction Degree") +
+    theme(legend.position = "top")
+
+# Showing all plots individually
+p1
+p2
+p3
+p4
+
+# Copies of all plots to use them in a grid
+p5 <- p1
+p6 <- p2
+p7 <- p3
+p8 <- p4
+
+# Removing elements to build a grid
+p5 <- p5 + labs(title = "", subtitle = "") + theme(legend.position = "none")
+p6 <- p6 + labs(title = "", subtitle = "") + theme(legend.position = "none")
+p7 <- p7 + labs(title = "", subtitle = "") + theme(legend.position = "none")
+p8 <- p8 + labs(title = "", subtitle = "") + theme(legend.position = "none")
+
+# Building a grid
+plot_grid(
+  p5, NULL, p6,
+  NULL, NULL, NULL,
+  p7, NULL, p8,
+  align = 'hv',
+  rel_widths = c(1, .04, 1),
+  rel_heights = c(1, .04, 1)
+)
 ```
+
 # Linting
 
 The code in this RMarkdown is linted with the [lintr package](https://github.com/jimhester/lintr), which is based on the [tidyverse style guide](http://style.tidyverse.org/).
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE, results='hide'}
-# lintr::lint("main.Rmd", linters =
-#               lintr::with_defaults(
-#                 commented_code_linter = NULL,
-#                 trailing_whitespace_linter = NULL
-#                 )
-#             )
+lintr::lint("main.Rmd", linters =
+              lintr::with_defaults(
+                commented_code_linter = NULL,
+                trailing_whitespace_linter = NULL
+                )
+            )
 # if you have additional scripts and want them to be linted too, add them here
-# lintr::lint("scripts/my_script.R")
+lintr::lint("scripts/my_script.R")
 ```
