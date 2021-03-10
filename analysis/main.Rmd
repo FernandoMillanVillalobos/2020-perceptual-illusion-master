@@ -867,7 +867,7 @@ p1 <- p1 + geom_point(size = 2.5) +
     labs(x = "Mean Accuracy Correct",
          y = "Mean Confidence High",
          title = "Correct responses vs high level of confidence per respond",
-         subtitle = "Showing the relation between all the correct responds for accuracy and high confidence per light direction degree",
+         subtitle = "Showing the relation between all the correct responses for accuracy and high confidence per light direction degree",
          color = "Light Direction Degree") +
     theme(legend.position = "top")
 
@@ -882,45 +882,107 @@ p2 <- p2 + geom_point(size = 2.5) +
     labs(x = "Mean Accuracy Correct",
          y = "Mean Confidence Low",
          title = "Correct responses vs low level of confidence per respond",
-         subtitle = "Showing the relation between all the correct responds for accuracy and low confidence per light direction degree",
+         subtitle = "Showing the relation between all the correct responses for accuracy and low confidence per light direction degree",
+         color = "Light Direction Degree") +
+    theme(legend.position = "top")
+
+# Plotting terrain reversal effect vs high confidence
+p3 <- ggplot(accu_confi, aes(x = pct_accu_wrong, y = pct_high_confi, color = light_dir, label = light_dir))
+p3 <- p3 + geom_point(size = 2.5) +
+    geom_jitter() +
+    geom_smooth(aes(x = pct_accu_wrong, y = pct_high_confi), method = lm, size = 1.1, color = "gray70", alpha = .2, se = TRUE, fullrange = TRUE) +
+    scale_color_brewer(type = "seq", palette = "Dark2") +
+    scale_x_continuous(labels = scales::percent_format(accuracy = TRUE, scale = 1), limits = c(0, 60), breaks = seq(0, 60, 10)) +
+    scale_y_continuous(labels = scales::percent_format(accuracy = TRUE, scale = 1), limits = c(50, 100), breaks = seq(50, 100, 10)) +
+    labs(x = "Mean Terrain Reversal Effect",
+         y = "Mean Confidence High",
+         title = "Terrain reversal effect vs high level of confidence per respond",
+         subtitle = "Showing the relation between terrain reversal effect and high confidence per light direction degree",
+         color = "Light Direction Degree") +
+    theme(legend.position = "top")
+
+# Plotting terrain reversal effect vs low confidence
+p4 <- ggplot(accu_confi, aes(x = pct_accu_wrong, y = pct_low_confi, color = light_dir, label = light_dir))
+p4 <- p4 + geom_point(size = 2.5) +
+    geom_jitter() +
+    geom_smooth(aes(x = pct_accu_wrong, y = pct_low_confi), method = lm, size = 1.1, color = "gray70", alpha = .2, se = TRUE, fullrange = TRUE) +
+    scale_color_brewer(type = "seq", palette = "Dark2") +
+    scale_x_continuous(labels = scales::percent_format(accuracy = TRUE, scale = 1), limits = c(0, 60), breaks = seq(0, 60, 10)) +
+    scale_y_continuous(labels = scales::percent_format(accuracy = TRUE, scale = 1), limits = c(0, 60), breaks = seq(0, 60, 10)) +
+    labs(x = "Mean Terrain Reversal Effect",
+         y = "Mean Confidence High",
+         title = "Terrain reversal effect vs low level of confidence per respond",
+         subtitle = "Showing the relation between terrain reversal effect and low confidence per light direction degree",
          color = "Light Direction Degree") +
     theme(legend.position = "top")
 
 # Plotting correct accuracy vs high confidence with 337.5 and 315 light direction degrees highlighted
 color_degrees <- c("#2E74C0", "#CB454A")
 
-p3 <- ggplot(accu_confi, aes(x = pct_accu_right, y = pct_high_confi, label = light_dir))
-p3 <- p3 + geom_point(size = 2.5, alpha = .07, color = "gray50") +
+p5 <- ggplot(accu_confi, aes(x = pct_accu_right, y = pct_high_confi, label = light_dir))
+p5 <- p5 + geom_point(size = 2.5, alpha = .07, color = "gray50") +
     geom_jitter(size = 2.5, alpha = .07, color = "gray50") +
     geom_point(data = subset(accu_confi, light_dir == "337.5"), aes(x = pct_accu_right, y = pct_high_confi, color = light_dir), size = 2.5) +
     geom_point(data = subset(accu_confi, light_dir == "315"), aes(x = pct_accu_right, y = pct_high_confi, color = light_dir), size = 2.5) +
     scale_color_manual(values = color_degrees) +
     scale_x_continuous(labels = scales::percent_format(accuracy = TRUE, scale = 1), limits = c(40, 100), breaks = seq(40, 100, 10)) +
     scale_y_continuous(labels = scales::percent_format(accuracy = TRUE, scale = 1), limits = c(40, 100), breaks = seq(40, 100, 10)) +
-    geom_text_repel(data = subset(accu_confi, light_dir == "337.5" | light_dir == "315"), aes(x = pct_accu_right, y = pct_high_confi, label = light_dir), size = 2) +
+    geom_text_repel(data = subset(accu_confi, light_dir == "337.5" | light_dir == "315"), aes(x = pct_accu_right, y = pct_high_confi, label = light_dir), size = 2, max.overlaps = 20) +
     labs(x = "Mean Accuracy Correct",
          y = "Mean Confidence High",
          title = "Correct responses vs high level of confidence per respond",
-         subtitle = "Showing the relation between all the correct responds for accuracy and high confidence per light direction degree",
+         subtitle = "Showing the relation between all the correct responses for accuracy and high confidence per light direction degree",
          color = "Light Direction Degree") +
     theme(legend.position = "top")
 
 # Plotting correct accuracy vs low confidence with 337.5 and 315 light direction degrees highlighted
-color_degrees <- c("#2E74C0", "#CB454A")
-
-p4 <- ggplot(accu_confi, aes(x = pct_accu_right, y = pct_low_confi, label = light_dir))
-p4 <- p4 + geom_point(size = 2.5, alpha = .07, color = "gray50") +
+p6 <- ggplot(accu_confi, aes(x = pct_accu_right, y = pct_low_confi, label = light_dir))
+p6 <- p6 + geom_point(size = 2.5, alpha = .07, color = "gray50") +
     geom_jitter(size = 2.5, alpha = .07, color = "gray50") +
     geom_point(data = subset(accu_confi, light_dir == "337.5"), aes(x = pct_accu_right, y = pct_low_confi, color = light_dir), size = 2.5) +
     geom_point(data = subset(accu_confi, light_dir == "315"), aes(x = pct_accu_right, y = pct_low_confi, color = light_dir), size = 2.5) +
     scale_color_manual(values = color_degrees) +
     scale_x_continuous(labels = scales::percent_format(accuracy = TRUE, scale = 1), limits = c(40, 100), breaks = seq(40, 100, 10)) +
     scale_y_continuous(labels = scales::percent_format(accuracy = TRUE, scale = 1), limits = c(10, 40), breaks = seq(10, 40, 10)) +
-    geom_text_repel(data = subset(accu_confi, light_dir == "337.5" | light_dir == "315"), aes(x = pct_accu_right, y = pct_low_confi, label = light_dir), size = 2) +
+    geom_text_repel(data = subset(accu_confi, light_dir == "337.5" | light_dir == "315"), aes(x = pct_accu_right, y = pct_low_confi, label = light_dir), size = 2, max.overlaps = 20) +
     labs(x = "Mean Accuracy Correct",
          y = "Mean Confidence Low",
          title = "Correct responses vs low level of confidence per respond",
-         subtitle = "Showing the relation between all the correct responds for accuracy and low confidence per light direction degree",
+         subtitle = "Showing the relation between all the correct responses for accuracy and low confidence per light direction degree",
+         color = "Light Direction Degree") +
+    theme(legend.position = "top")
+
+# Plotting terrain reversal effect vs high confidence with 337.5 and 315 light direction degrees highlighted
+p7 <- ggplot(accu_confi, aes(x = pct_accu_wrong, y = pct_high_confi, label = light_dir))
+p7 <- p7 + geom_point(size = 2.5, alpha = .07, color = "gray50") +
+    geom_jitter(size = 2.5, alpha = .07, color = "gray50") +
+    geom_point(data = subset(accu_confi, light_dir == "337.5"), aes(x = pct_accu_wrong, y = pct_high_confi, color = light_dir), size = 2.5) +
+    geom_point(data = subset(accu_confi, light_dir == "315"), aes(x = pct_accu_wrong, y = pct_high_confi, color = light_dir), size = 2.5) +
+    scale_color_manual(values = color_degrees) +
+    scale_x_continuous(labels = scales::percent_format(accuracy = TRUE, scale = 1), limits = c(0, 60), breaks = seq(0, 60, 10)) +
+    scale_y_continuous(labels = scales::percent_format(accuracy = TRUE, scale = 1), limits = c(50, 100), breaks = seq(50, 100, 10)) +
+    geom_text_repel(data = subset(accu_confi, light_dir == "337.5" | light_dir == "315"), aes(x = pct_accu_wrong, y = pct_high_confi, label = light_dir), size = 2, max.overlaps = 20) +
+    labs(x = "Mean Terrain Reversal Effect",
+         y = "Mean Confidence High",
+         title = "Terrain reversal effect vs high level of confidence per respond",
+         subtitle = "Showing the relation between terrain reversal effect and high confidence per light direction degree",
+         color = "Light Direction Degree") +
+    theme(legend.position = "top")
+
+# Plotting terrain reversal effect vs low confidence with 337.5 and 315 light direction degrees highlighted
+p8 <- ggplot(accu_confi, aes(x = pct_accu_wrong, y = pct_low_confi, label = light_dir))
+p8 <- p8 + geom_point(size = 2.5, alpha = .07, color = "gray50") +
+    geom_jitter(size = 2.5, alpha = .07, color = "gray50") +
+    geom_point(data = subset(accu_confi, light_dir == "337.5"), aes(x = pct_accu_wrong, y = pct_low_confi, color = light_dir), size = 2.5) +
+    geom_point(data = subset(accu_confi, light_dir == "315"), aes(x = pct_accu_wrong, y = pct_low_confi, color = light_dir), size = 2.5) +
+    scale_color_manual(values = color_degrees) +
+    scale_x_continuous(labels = scales::percent_format(accuracy = TRUE, scale = 1), limits = c(0, 60), breaks = seq(0, 60, 10)) +
+    scale_y_continuous(labels = scales::percent_format(accuracy = TRUE, scale = 1), limits = c(0, 60), breaks = seq(0, 60, 10)) +
+    geom_text_repel(data = subset(accu_confi, light_dir == "337.5" | light_dir == "315"), aes(x = pct_accu_wrong, y = pct_low_confi, label = light_dir), size = 2, max.overlaps = 20) +
+    labs(x = "Mean Terrain Reversal Effect",
+         y = "Mean Confidence Low",
+         title = "Terrain reversal effect vs low level of confidence per respond",
+         subtitle = "Showing the relation between terrain reveral effect and low confidence per light direction degree",
          color = "Light Direction Degree") +
     theme(legend.position = "top")
 
@@ -929,24 +991,46 @@ p1
 p2
 p3
 p4
+p5
+p6
+p7
+p8
 
-# Copies of all plots to use them in a grid
-p5 <- p1
-p6 <- p2
-p7 <- p3
-p8 <- p4
+# Copies of all plots to use them in two grids
+p9 <- p1
+p10 <- p2
+p11 <- p3
+p12 <- p4
+p13 <- p5
+p14 <- p6
+p15 <- p7
+p16 <- p8
 
-# Removing elements to build a grid
-p5 <- p5 + labs(title = "", subtitle = "") + theme(legend.position = "none")
-p6 <- p6 + labs(title = "", subtitle = "") + theme(legend.position = "none")
-p7 <- p7 + labs(title = "", subtitle = "") + theme(legend.position = "none")
-p8 <- p8 + labs(title = "", subtitle = "") + theme(legend.position = "none")
+# Removing elements to build the grids
+p9 <- p9 + labs(title = "", subtitle = "") + theme(legend.position = "none")
+p10 <- p10 + labs(title = "", subtitle = "") + theme(legend.position = "none")
+p11 <- p11 + labs(title = "", subtitle = "") + theme(legend.position = "none")
+p12 <- p12 + labs(title = "", subtitle = "") + theme(legend.position = "none")
+p13 <- p13 + labs(title = "", subtitle = "") + theme(legend.position = "none")
+p14 <- p14 + labs(title = "", subtitle = "") + theme(legend.position = "none")
+p15 <- p15 + labs(title = "", subtitle = "") + theme(legend.position = "none")
+p16 <- p16 + labs(title = "", subtitle = "") + theme(legend.position = "none")
 
-# Building a grid
+# Building the first grid
 plot_grid(
-  p5, NULL, p6,
+  p9, NULL, p10,
   NULL, NULL, NULL,
-  p7, NULL, p8,
+  p11, NULL, p12,
+  align = 'hv',
+  rel_widths = c(1, .04, 1),
+  rel_heights = c(1, .04, 1)
+)
+
+# Building the second grid
+plot_grid(
+  p13, NULL, p14,
+  NULL, NULL, NULL,
+  p15, NULL, p16,
   align = 'hv',
   rel_widths = c(1, .04, 1),
   rel_heights = c(1, .04, 1)
