@@ -617,6 +617,58 @@ accu_resp_s_hem <- accu_resp_north %>%
 
 accu_resp_hem <- left_join(accu_resp_n_hem, accu_resp_s_hem, by = "light_dir")
 
+# Calculating accuracy per participant and handedness
+accu_hand_l <- df_long %>% 
+  filter(accuracy == "yes",
+         handedness == "l") %>%
+  group_by(ds_owner, id, handedness) %>% 
+  mutate(accu_count = n(),
+         accu_pct = round(accu_count / 40 * 100, 1)) %>% 
+  ungroup() %>% 
+  select(ds_owner, id, handedness, accu_count, accu_pct)
+
+accu_hand_r <- df_long %>% 
+  filter(accuracy == "yes",
+         handedness == "r") %>%
+  group_by(ds_owner, id, handedness) %>% 
+  mutate(accu_count = n(),
+         accu_pct = round(accu_count / 40 * 100, 1)) %>% 
+  ungroup() %>% 
+  select(ds_owner, id, handedness, accu_count, accu_pct)
+
+# Calculating accuracy per participant, handedness and respond
+accu_resp_hand_l <- df_long %>% 
+  filter(accuracy == "yes",
+         handedness == "l" | handedness == "b") %>% 
+  group_by(landform, land_dir, light_dir) %>% 
+  summarise(accu_count = n()) %>% 
+  mutate(accu_left = accu_count / 34 * 100) %>% 
+  ungroup() %>%
+  select(landform, land_dir, light_dir, accu_left)
+
+accu_resp_hand_r <- df_long %>% 
+  filter(accuracy == "yes",
+         handedness == "r") %>% 
+  group_by(landform, land_dir, light_dir) %>% 
+  summarise(accu_count = n()) %>% 
+  mutate(accu_right = accu_count / 156 * 100) %>% 
+  ungroup() %>%
+  select(landform, land_dir, light_dir, accu_right)
+
+accu_resp_hand <-  accu_resp_hand_l %>% left_join(accu_resp_hand_r)
+
+# Calculating accuracy per handedness and respond (northern light direction)
+accu_hand_l_north<- accu_resp_hand %>%
+  group_by(light_dir) %>% 
+  summarise(mean_left = mean(accu_left))
+
+accu_hand_r_north<- accu_resp_hand %>%
+  group_by(light_dir) %>% 
+  summarise(mean_right = mean(accu_right))
+
+accu_hand_north <- accu_hand_l_north %>% left_join(accu_hand_r_north)
+accu_hand_north
+
 # df_long %>% 
 #   filter(accuracy == "yes") %>%
 #   group_by(ds_owner, id) %>% 
