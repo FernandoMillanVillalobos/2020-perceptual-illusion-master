@@ -205,12 +205,14 @@ knitr::read_chunk("scripts/align_legend.R")
 source("scripts/align_legend.R")
 knitr::read_chunk("scripts/label_log10.R")
 source("scripts/label_log10.R")
+knitr::read_chunk("scripts/outliers.R")
+source("scripts/outliers.R")
 ```
 
 ## Theme
 
 ```{r}
-# theme_set(theme_cowplot(font_size = 11))
+theme_set(theme_cowplot(font_size = 11))
 ```
 
 # Data Wrangling
@@ -555,16 +557,39 @@ df_long$confidence[df_long$respond == "3"] <- "ambiguous"
 
 ### Exploring accuracy
 
-```{r eda_accuracy}
+```{r eda_accuracy_setting}
 # Calculating accuracy per participant
 accu_part <- df_long %>% 
   filter(accuracy == "yes") %>%
   group_by(ds_owner, id) %>% 
   mutate(accu_count = n(),
          accu_pct = round(accu_count / 40 * 100, 1)) %>% 
-  ungroup() %>% 
+  ungroup() %>%
   select(ds_owner, id, accu_count, accu_pct)
 
+# Looking for outliers
+p <- ggplot(accu_part, aes(x = ds_owner, y = accu_pct))
+p + geom_boxplot(fill = "#85CFE6") +
+  scale_y_continuous(labels = scales::label_percent(scale = 1)) +
+  labs(x = "Data Set Owner", y = "Accuracy (%)",
+       title = "Spotting Outliers for Accuracy")
+
+outlierSummary(accu_part$accu_pct)
+
+# Assessing outliers
+accu_part_outliers <- accu_part %>% 
+  mutate(zscore = (accu_pct - mean(accu_pct)) / sd(accu_pct),
+         outlier = ifelse(zscore > 2.58 | zscore < -2.58, "yes", "no")) %>% 
+  filter(outlier == "yes") %>% 
+  group_by(ds_owner, id) %>% 
+  summarise()
+```
+
+Notes about outliers spotting: 
+- from Victoria's ds participant number 72 was excluded when calculating accuracy because he answered all questions wrong (meaning: accuracy = "no").
+- Also from Victoria's ds, participant number 68 got a low rating (52.5) but according to our outlier definition (> 2.58 | < -2.58), it cannot be considered an outlier.
+
+```{r, eda_accuracy_exploring}
 # Calculating accuracy per respond
 accu_resp_j <- df_long %>% 
   filter(accuracy == "yes",
