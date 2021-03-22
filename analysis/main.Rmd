@@ -695,6 +695,36 @@ accu_gender_north_f <- accu_gender %>%
 
 accu_gender_north <- accu_gender_north_m %>% left_join(accu_gender_north_f)
 
+# Calculating accuracy per expertise and respond
+accu_exp_some <- df_long %>% 
+  filter(accuracy == "yes",
+         expertise == "some_experience") %>% 
+  group_by(landform, land_dir, light_dir) %>% 
+  summarise(accu_count = n()) %>% 
+  mutate(some_pct = accu_count / 40 * 100) %>% 
+  select(landform, land_dir, light_dir, some_pct)
+
+accu_exp_no <- df_long %>% 
+  filter(accuracy == "yes",
+         expertise == "no_experience") %>% 
+  group_by(landform, land_dir, light_dir) %>% 
+  summarise(accu_count = n()) %>% 
+  mutate(no_pct = accu_count / 150 * 100) %>% 
+  select(landform, land_dir, light_dir, no_pct)
+
+accu_exp <- accu_exp_some %>% left_join(accu_exp_no)
+
+# Calculating accuracy per expertise and respond (northern light direction)
+accu_exp_some_north <- accu_exp %>%
+  group_by(light_dir) %>%
+  summarise(mean_some = mean(some_pct))
+
+accu_exp_no_north <- accu_exp %>%
+  group_by(light_dir) %>%
+  summarise(mean_no = mean(no_pct))
+
+accu_exp_north <- accu_exp_some_north %>% left_join(accu_exp_no_north)
+
 # df_long %>% 
 #   filter(accuracy == "yes") %>%
 #   group_by(ds_owner, id) %>% 
