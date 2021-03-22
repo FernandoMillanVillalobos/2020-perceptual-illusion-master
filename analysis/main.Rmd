@@ -530,9 +530,6 @@ df_long <- df_wide %>% pivot_longer(
   names_to = c("landform", "land_dir", "light_dir"),
   names_pattern = "q?_(.)(.*)_(.*?..*)",
   values_to = "respond")
-
-# # Converting from data frame to data.table
-# df_long_dt <- as.data.table(df_long)
 ```
 
 # Data Analysis
@@ -636,7 +633,7 @@ accu_hand_r <- df_long %>%
   ungroup() %>% 
   select(ds_owner, id, handedness, accu_count, accu_pct)
 
-# Calculating accuracy per participant, handedness and respond
+# Calculating accuracy per handedness and respond
 accu_resp_hand_l <- df_long %>% 
   filter(accuracy == "yes",
          handedness == "l" | handedness == "b") %>% 
@@ -667,7 +664,36 @@ accu_hand_r_north<- accu_resp_hand %>%
   summarise(mean_right = mean(accu_right))
 
 accu_hand_north <- accu_hand_l_north %>% left_join(accu_hand_r_north)
-accu_hand_north
+
+# Calculating accuracy per gender and respond
+accu_gender_m <- df_long %>% 
+  filter(accuracy == "yes",
+         gender == "m") %>% 
+  group_by(landform, land_dir, light_dir) %>% 
+  summarise(accu_count = n()) %>% 
+  mutate(male_pct = accu_count / 104 * 100) %>% 
+  select(landform, land_dir, light_dir, male_pct)
+
+accu_gender_f <- df_long %>% 
+  filter(accuracy == "yes",
+         gender == "f") %>% 
+  group_by(landform, land_dir, light_dir) %>% 
+  summarise(accu_count = n()) %>% 
+  mutate(female_pct = accu_count / 86 * 100) %>% 
+  select(landform, land_dir, light_dir, female_pct)
+
+accu_gender <- accu_gender_m %>% left_join(accu_gender_f)
+
+# Calculating accuracy per gender and respond (northern light direction)
+accu_gender_north_m <- accu_gender %>% 
+  group_by(light_dir) %>% 
+  summarise(mean_male = mean(male_pct))
+
+accu_gender_north_f <- accu_gender %>% 
+  group_by(light_dir) %>% 
+  summarise(mean_female = mean(female_pct))
+
+accu_gender_north <- accu_gender_north_m %>% left_join(accu_gender_north_f)
 
 # df_long %>% 
 #   filter(accuracy == "yes") %>%
