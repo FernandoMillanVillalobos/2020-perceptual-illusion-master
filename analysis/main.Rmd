@@ -634,19 +634,26 @@ accu_resp_north <- accu_resp %>%
 accu_resp_north <- within(accu_resp_north, ds_owner <- factor(ds_owner, levels = c("j", "g", "v", "a")))
 accu_resp_north <- within(accu_resp_north, light_dir <- factor(light_dir, levels = c(0, 337.5, 315, 292.5, 270)))
 # df_long_clean$light_dir <- within(df_long_clean, light_dir <- factor(light_dir, levels = c(0, 337.5, 315, 292.5, 270)))
+# df_long_clean$light_dir <- ordered(df_long_clean$light_dir, levels = c(0, 337.5, 315, 292.5, 270))
 
 p <- ggplot(accu_resp_north, aes(x = light_dir, y = mean, fill = light_dir, label = mean))
-p + geom_bar(stat = "identity") +
+p + geom_bar(stat = "identity", alpha = .9) +
     scale_fill_brewer(type = "qual", palette = "Dark2") +
     scale_y_continuous(labels = scales::label_percent(scale = 1),
                        expand = expansion(mult = c(0, 0.05))) +
     labs(x = "Light Direction", y = "Mean Accuracy",
          fill = "Light Direction",
          title = "Mean accuracy per data set owner") +
-    theme(legend.position = "NULL") +
-    facet_wrap(~ ds_owner) 
-    panel_border()
-    
+    geom_text(aes(y = mean, label = round(mean, digits = 1)), position = position_dodge2(width = 1), vjust = 2, size = rel(3), family = dviz_font_family) +
+    facet_wrap(~ ds_owner) +
+    theme_minimal_hgrid() +
+    theme(
+      legend.position = "NULL",
+      strip.background = element_blank(),
+      axis.line.x.bottom = element_line(size = .3, color = "black"),
+      axis.ticks.x = element_blank())
+```
+```{r}
 # Calculating accuracy mean per light direction and hemisphere
 accu_resp_n_hem <- accu_resp_north %>%
   filter(ds_owner == "j" | ds_owner == "g") %>%
@@ -663,19 +670,22 @@ accu_resp_hem <- left_join(accu_resp_n_hem, accu_resp_s_hem, by = "light_dir")
 accu_resp_hem_long <- accu_resp_hem %>% pivot_longer(-light_dir, names_to = "hemisphere", values_to = "mean")
  
 p <- ggplot(accu_resp_hem_long, aes(x = light_dir, y = mean, fill = hemisphere))
-p + geom_bar(stat = "identity", position = "dodge2") +
+p + geom_bar(stat = "identity", position = "dodge2", alpha = .9) +
     scale_fill_brewer(type = "qual", palette = "Dark2") +
     scale_y_continuous(labels = scales::label_percent(scale = 1),
                        expand = expansion(mult = c(0, 0.05)),
                        limits = c(0, 100)) +
+    geom_text(aes(y = mean, label = round(mean, digits = 1)), position = position_dodge2(width = 1), vjust = -0.40, size = rel(3), family = dviz_font_family) +
     labs(x = "Light Direction", y = "Mean Accuracy",
          fill = "Hemisphere",
          title = "Mean accuracy per hemisphere") +
     theme_minimal_hgrid() +
-    theme(legend.position = "top")
+    theme(legend.position = "top",
+    axis.line.x.bottom = element_line(size = .5, color = "black"),
+    axis.ticks.x = element_blank())
 
 # Calculating accuracy per participant and handedness
-accu_hand_l <- df_long %>% 
+accu_hand_l <- df_long_clean %>% 
   filter(accuracy == "yes",
          handedness == "l") %>%
   group_by(ds_owner, id, handedness) %>% 
@@ -684,7 +694,7 @@ accu_hand_l <- df_long %>%
   ungroup() %>% 
   select(ds_owner, id, handedness, accu_count, accu_pct)
 
-accu_hand_r <- df_long %>% 
+accu_hand_r <- df_long_clean %>% 
   filter(accuracy == "yes",
          handedness == "r") %>%
   group_by(ds_owner, id, handedness) %>% 
@@ -693,7 +703,7 @@ accu_hand_r <- df_long %>%
   ungroup() %>% 
   select(ds_owner, id, handedness, accu_count, accu_pct)
 
-accu_hand_b <- df_long %>% 
+accu_hand_b <- df_long_clean %>% 
   filter(accuracy == "yes",
          handedness == "b") %>%
   group_by(ds_owner, id, handedness) %>% 
@@ -703,7 +713,7 @@ accu_hand_b <- df_long %>%
   select(ds_owner, id, handedness, accu_count, accu_pct)
 
 # Calculating accuracy per handedness and respond
-accu_resp_hand_l <- df_long %>%
+accu_resp_hand_l <- df_long_clean %>%
   filter(accuracy == "yes",
          handedness == "l" | handedness == "b") %>%
   group_by(landform, land_dir, light_dir) %>%
@@ -712,7 +722,7 @@ accu_resp_hand_l <- df_long %>%
   ungroup() %>%
   select(landform,land_dir, light_dir, accu_left)
 
-accu_resp_hand_r <- df_long %>%
+accu_resp_hand_r <- df_long_clean %>%
   filter(accuracy == "yes",
          handedness == "r") %>%
   group_by(landform, land_dir, light_dir) %>%
@@ -720,7 +730,7 @@ accu_resp_hand_r <- df_long %>%
   mutate(accu_right = accu_count / 156 * 100) %>%
   ungroup() %>%
   select(landform, land_dir, light_dir, accu_right)
-#
+
 accu_resp_hand <-  accu_resp_hand_l %>% left_join(accu_resp_hand_r)
 
 # Calculating accuracy per handedness and respond (northern light direction)
@@ -739,19 +749,22 @@ accu_hand_north_long <- accu_hand_north %>% pivot_longer(-light_dir, names_to = 
 accu_hand_north_long <- within(accu_hand_north_long, light_dir <- factor(light_dir, levels = c(0, 337.5, 315, 292.5, 270)))
 
 p <- ggplot(accu_hand_north_long, aes(x = light_dir, y = mean, fill = handedness))
-p + geom_bar(stat = "identity", position = "dodge2") +
+p + geom_bar(stat = "identity", position = "dodge2", alpha =.9) +
     scale_fill_brewer(type = "qual", palette = "Dark2") +
     scale_y_continuous(labels = scales::label_percent(scale = 1),
                        expand = expansion(mult = c(0, 0.05)),
                        limits = c(0, 100)) +
+    geom_text(aes(y = mean, label = round(mean, digits = 1)), position = position_dodge2(width = 1), vjust = -0.40, size = rel(3), family = dviz_font_family) +
     labs(x = "Light Direction", y = "Mean Accuracy",
          fill = "Handedness",
          title = "Mean accuracy per handedness") +
     theme_minimal_hgrid() +
-    theme(legend.position = "top")
+    theme(legend.position = "top",
+    axis.line.x.bottom = element_line(size = .5, color = "black"),
+    axis.ticks.x = element_blank())
 
 # Calculating accuracy per gender and respond
-accu_gender_m <- df_long %>% 
+accu_gender_m <- df_long_clean %>% 
   filter(accuracy == "yes",
          gender == "m") %>% 
   group_by(landform, land_dir, light_dir) %>% 
@@ -785,19 +798,22 @@ accu_gender_north_long <- accu_gender_north %>% pivot_longer(-light_dir, names_t
 accu_gender_north_long <- within(accu_gender_north_long, light_dir <- factor(light_dir, levels = c(0, 337.5, 315, 292.5, 270)))
 
 p <- ggplot(accu_gender_north_long, aes(x = light_dir, y = mean, fill = gender))
-p + geom_bar(stat = "identity", position = "dodge2") +
+p + geom_bar(stat = "identity", position = "dodge2", alpha = .9) +
     scale_fill_brewer(type = "qual", palette = "Dark2") +
     scale_y_continuous(labels = scales::label_percent(scale = 1),
                        expand = expansion(mult = c(0, 0.05)),
                        limits = c(0, 100)) +
+    geom_text(aes(y = mean, label = round(mean, digits = 1)), position = position_dodge2(width = 1), vjust = -0.40, size = rel(3), family = dviz_font_family) +
     labs(x = "Light Direction", y = "Mean Accuracy",
          fill = "Gender",
          title = "Mean accuracy per gender") +
     theme_minimal_hgrid() +
-    theme(legend.position = "top")
+    theme(legend.position = "top",
+    axis.line.x.bottom = element_line(size = .5, color = "black"),
+    axis.ticks.x = element_blank())
 
 # Calculating accuracy per expertise and respond
-accu_exp_some <- df_long %>% 
+accu_exp_some <- df_long_clean %>% 
   filter(accuracy == "yes",
          expertise == "some_experience") %>% 
   group_by(landform, land_dir, light_dir) %>% 
@@ -805,7 +821,7 @@ accu_exp_some <- df_long %>%
   mutate(some_pct = accu_count / 40 * 100) %>% 
   select(landform, land_dir, light_dir, some_pct)
 
-accu_exp_no <- df_long %>% 
+accu_exp_no <- df_long_clean %>% 
   filter(accuracy == "yes",
          expertise == "no_experience") %>% 
   group_by(landform, land_dir, light_dir) %>% 
@@ -831,238 +847,191 @@ accu_exp_north_long <- accu_exp_north %>% pivot_longer(-light_dir, names_to = "e
 accu_exp_north_long <- within(accu_exp_north_long, light_dir <- factor(light_dir, levels = c(0, 337.5, 315, 292.5, 270)))
 
 p <- ggplot(accu_exp_north_long, aes(x = light_dir, y = mean, fill = expertise))
-p + geom_bar(stat = "identity", position = "dodge2") +
+p + geom_bar(stat = "identity", position = "dodge2", alpha = .9) +
     scale_fill_brewer(type = "qual", palette = "Dark2") +
     scale_y_continuous(labels = scales::label_percent(scale = 1),
                        expand = expansion(mult = c(0, 0.05)),
                        limits = c(0, 100)) +
+    geom_text(aes(y = mean, label = round(mean, digits = 1)), position = position_dodge2(width = 1), vjust = -0.40, size = rel(3), family = dviz_font_family) +
     labs(x = "Light Direction", y = "Mean Accuracy",
          fill = "Expertise",
          title = "Mean accuracy per expertise") +
     theme_minimal_hgrid() +
-    theme(legend.position = "top")
+    theme(legend.position = "top",
+          axis.line.x.bottom = element_line(size = .5, color = "black"),
+          axis.ticks.x = element_blank())
 ```
 
 ```{r}
-# p <- ggplot(accu_hem_degrees, aes(x = light_dir, y = pct, fill = hemisphere, label = pct))
-# p + geom_bar(stat = "identity", position = "dodge2") +
-#   scale_fill_brewer(type = "qual", palette = "Dark2") +
-#   labs(x = "Light Direction (degrees)", y = "Mean Accuracy", 
-#      fill = "Hemisphere", 
-#      title = "Mean accuracy per hemisphere and light direction (%)") +
-#   scale_y_continuous(labels = scales::label_percent(scale = 1)) +
-#   geom_text(aes(y = pct, label = pct), position = position_dodge2(width = 1), hjust = -0.20, size = rel(3)) +
-#   facet_grid(~ accuracy, labeller = labeller(accuracy = c(`no` = "Inverse", `yes` = "Correct"))) +
-#   coord_flip() +
-#   theme(legend.position = "bottom")
-# 
-# accu_hem_degrees_inverse <- df_long %>%
-#   group_by(hemisphere, accuracy, light_dir) %>%
-#   summarize(N = n()) %>%
-#   mutate(pct = round(N / sum(N) * 100, 1)) %>%
-#   filter(accuracy == "no") %>% 
-#   select(accuracy, light_dir, pct)
-# 
-# accu_hem_degrees_inverse %>% 
+# accu_gender_north_long %>%
 #   treemap::treemap(
-#         index = c("hemisphere", "light_dir"),
-#         vSize = "pct",
+#         index = c("gender", "light_dir"),
+#         vSize = "mean",
 #         title = "Terrain inversal effect per hemisphere and light direction",
 #         fontsize.title = 12
 #         )
-# 
-# # Accuracy per gender
-# accu_gender <- df_long %>%
-#   group_by(gender, accuracy) %>%
-#   summarize(N = n()) %>%
-#   mutate(pct = round(N / sum(N) * 100, 1)) %>%
-#   select(gender, accuracy,pct)
-# 
-# accu_gender <- within(accu_gender, accuracy <- factor(accuracy, levels = c("yes", "no")))  
-# 
-# p <- ggplot(accu_gender, aes(x = accuracy, y = pct, fill = gender, label = pct))
-# p + geom_bar(stat = "identity", position = "dodge2") +
-#     scale_fill_brewer(type = "qual", palette = "Dark2", labels = c("female", "male")) +
-#     scale_y_continuous(labels = scales::label_percent(scale = 1)) +
-#     scale_x_discrete(labels = c("Correct", "Inverse")) +
-#     labs(x = NULL, y = "Mean Accuracy",
-#          fill = "Gender",
-#          title = "Mean accuracy per gender (%)") +
-#     geom_text(aes(y = pct, label = pct), position = position_dodge2(width = 1), vjust = -0.40, size = rel(3)) +
-#     theme(legend.position = "top")
-# 
-# # Accuracy per handedness
-# accu_hand <- df_long %>%
-#   group_by(handedness, accuracy) %>%
-#   summarize(N = n()) %>%
-#   mutate(pct = round(N / sum(N) * 100, 1)) %>%
-#   select(handedness, accuracy,pct)
-# 
-# accu_hand <- within(accu_hand, accuracy <- factor(accuracy, levels = c("yes", "no")))
-# accu_hand <- within(accu_hand, handedness <- factor(handedness, levels = c("b", "r", "l")))
-# accu_hand$handedness <- ordered(accu_hand$handedness, levels = c("r", "l", "b"))
-# 
-# p <- ggplot(accu_hand, aes(x = accuracy, y = pct, fill = handedness, label = pct))
-# p + geom_bar(stat = "identity", position = "dodge2") +
-#     scale_fill_brewer(type = "qual", palette = "Dark2", labels = c("right-handed", "left-handed", "ambidextrous")) +
-#     scale_y_continuous(labels = scales::label_percent(scale = 1)) +
-#     scale_x_discrete(labels = c("Correct", "Inverse")) +
-#     labs(x = NULL, y = "Mean Accuracy",
-#          fill = "Handedness",
-#          title = "Mean accuracy per handedness (%)") +
-#     geom_text(aes(y = pct, label = pct), position = position_dodge2(width = 1), vjust = -0.40, size = rel(3)) +
-#     theme(legend.position = "top")
-# 
-# # Accuracy per expertise
-# accu_exp <- df_long %>%
-#   group_by(expertise, accuracy) %>%
-#   summarize(N = n()) %>%
-#   mutate(pct = round(N / sum(N) * 100, 1)) %>%
-#   select(expertise, accuracy,pct)
-# 
-# accu_exp <- within(accu_exp, accuracy <- factor(accuracy, levels = c("yes", "no")))
-# accu_exp <- within(accu_exp, expertise <- factor(expertise, levels = c("some_experience", "no_experience")))
-#   
-# p <- ggplot(accu_exp, aes(x = accuracy, y = pct, fill = expertise, label = pct))
-# p + geom_bar(stat = "identity", position = "dodge2") +
-#     scale_fill_brewer(type = "qual", palette = "Dark2", labels = c("some experience", "no experience")) +
-#     scale_y_continuous(labels = scales::label_percent(scale = 1)) +
-#     scale_x_discrete(labels = c("Correct", "Inverse")) +
-#     labs(x = NULL, y = "Mean Accuracy",
-#          fill = "Expertise",
-#          title = "Mean accuracy per expertise (%)") +
-#     geom_text(aes(y = pct, label = pct), position = position_dodge2(width = 1), vjust = -0.40, size = rel(3)) +
-#     theme(legend.position = "top")
 ```
+
 ### Exploring confidence
 
 ```{r eda_confidence}
 # Confidence per hemisphere
-# confi_hem <- df_long %>%
-#   group_by(hemisphere, confidence) %>%
-#   summarize(N = n()) %>%
-#   mutate(pct = round(N / sum(N) * 100, 1)) %>%
-#   select(confidence, pct)
-# 
-# confi_hem <- within(confi_hem, confidence <- factor(confidence, levels = c("high_confidence", "low_confidence", "ambiguous")))
-# 
-# p <- ggplot(confi_hem, aes(x = confidence, y = pct, fill = hemisphere))
-# p + geom_bar(stat = "identity", position = "dodge2") +
-#     scale_fill_brewer(type = "qual", palette = "Dark2") +
-#     scale_y_continuous(labels = scales::label_percent(scale = 1)) +
-#     scale_x_discrete(labels = c("High Confidence", "Low Confidence", "Ambiguous")) +
-#     labs(x = NULL, y = "Mean Confidence",
-#          fill = "Hemisphere",
-#          title = "Mean confidence per hemisphere (%)") +
-#     geom_text(aes(y = pct, label = pct), position = position_dodge2(width = 1), vjust = -0.40, size = rel(3)) +
-#     theme(legend.position = "top")
-# 
-# p <- ggplot(confi_hem, aes(x = reorder(hemisphere, -pct), y = pct, fill = confidence))
-# p + geom_bar(stat = "identity", color = "gray80") +
-#     scale_fill_viridis_d("Confidence", labels = c("high confidence", "low confidence", "ambiguous")) +
-#     scale_y_continuous(labels = scales::label_percent(scale = 1)) +
-#     scale_x_discrete(labels = c("Southern", "Northern")) +
-#     labs(x = NULL, y = "Mean Confidence",
-#        fill = "Hemisphere",
-#        title = "Mean confidence per hemisphere (%)") +
-#     theme(legend.position = "top") +
-#     coord_flip()
-# 
-# # Confidence per gender
-# confi_gender <- df_long %>%
-#   group_by(gender, confidence) %>%
-#   summarize(N = n()) %>%
-#   mutate(pct = round(N / sum(N) * 100, 1)) %>%
-#   select(gender, confidence, pct)
-# 
-# confi_gender <- within(confi_gender, confidence <- factor(confidence, levels = c("high_confidence", "low_confidence", "ambiguous")))
-# 
-# p <- ggplot(confi_gender, aes(x = confidence, y = pct, fill = gender))
-# p + geom_bar(stat = "identity", position = "dodge2") +
-#     scale_fill_brewer(type = "qual", palette = "Dark2", labels = c("female", "male")) +
-#     scale_y_continuous(labels = scales::label_percent(scale = 1)) +
-#     scale_x_discrete(labels = c("High Confidence", "Low Confidence", "Ambiguous")) +
-#     labs(x = NULL, y = "Mean Confidence",
-#          fill = "Gender",
-#          title = "Mean confidence per gender (%)") +
-#     geom_text(aes(y = pct, label = pct), position = position_dodge2(width = 1), vjust = -0.40, size = rel(3)) +
-#     theme(legend.position = "top")
-# 
-# p <- ggplot(confi_gender, aes(x = gender, y = pct, fill = confidence))
-# p + geom_bar(stat = "identity", color = "gray80") +
-#     scale_fill_viridis_d("Confidence", labels = c("high confidence", "low confidence", "ambiguous")) +
-#     scale_y_continuous(labels = scales::label_percent(scale = 1)) +
-#     scale_x_discrete(labels = c("Female", "Male")) +
-#     labs(x = NULL, y = "Mean Confidence",
-#        fill = "Confidence",
-#        title = "Mean confidence per gender (%)") +
-#     theme(legend.position = "top") +
-#     coord_flip()
-# 
-# # Confidence per handedness
-# confi_hand <- df_long %>%
-#   group_by(handedness, confidence) %>%
-#   summarize(N = n()) %>%
-#   mutate(pct = round(N / sum(N) * 100, 1)) %>%
-#   select(handedness, confidence, pct)
-# 
-# confi_hand <- within(confi_hand, confidence <- factor(confidence, levels = c("high_confidence", "low_confidence", "ambiguous")))
-# confi_hand <- within(confi_hand, handedness <- factor(handedness, levels = c("b", "r", "l")))
-# confi_hand$handedness <- ordered(confi_hand$handedness, levels = c("r", "l", "b"))
-# 
-# p <- ggplot(confi_hand, aes(x = confidence, y = pct, fill = handedness))
-# p + geom_bar(stat = "identity", position = "dodge2") +
-#     scale_fill_brewer(type = "qual", palette = "Dark2", labels = c("right-handed", "left-handed", "ambidextrous")) +
-#     scale_y_continuous(labels = scales::label_percent(scale = 1)) +
-#     scale_x_discrete(labels = c("High Confidence", "Low Confidence", "Ambiguous")) +
-#     labs(x = NULL, y = "Mean Confidence",
-#          fill = "Handedness",
-#          title = "Mean confidence per handedness (%)") +
-#     geom_text(aes(y = pct, label = pct), position = position_dodge2(width = 1), vjust = -0.40, size = rel(3)) +
-#     theme(legend.position = "top")
-# 
-# p <- ggplot(confi_hand, aes(x = handedness, y = pct, fill = confidence))
-# p + geom_bar(stat = "identity", color = "gray80") +
-#     scale_fill_viridis_d("Confidence", labels = c("high confidence", "low confidence", "ambiguous")) +
-#     scale_y_continuous(labels = scales::label_percent(scale = 1)) +
-#     scale_x_discrete(labels = c("Right-handed", "Left-handed", "Ambidextrous")) +
-#     labs(x = NULL, y = "Mean Confidence",
-#        fill = "Confidence",
-#        title = "Mean confidence per handedness (%)") +
-#     theme(legend.position = "top") +
-#     coord_flip()
-# 
-# # Confidence per expertise
-# confi_exp <- df_long %>%
-#   group_by(expertise, confidence) %>%
-#   summarize(N = n()) %>%
-#   mutate(pct = round(N / sum(N) * 100, 1)) %>%
-#   select(expertise, confidence, pct)
-# 
-# confi_exp <- within(confi_exp, confidence <- factor(confidence, levels = c("high_confidence", "low_confidence", "ambiguous")))
-# confi_exp <- within(confi_exp, expertise <- factor(expertise, levels = c("some_experience", "no_experience")))
-# 
-# p <- ggplot(confi_exp, aes(x = confidence, y = pct, fill = expertise))
-# p + geom_bar(stat = "identity", position = "dodge2") +
-#     scale_fill_brewer(type = "qual", palette = "Dark2", labels = c("some experience", "no experience")) +
-#     scale_y_continuous(labels = scales::label_percent(scale = 1)) +
-#     scale_x_discrete(labels = c("High Confidence", "Low Confidence", "Ambiguous")) +
-#     labs(x = NULL, y = "Mean Confidence",
-#          fill = "Expertise",
-#          title = "Mean confidence per expertise (%)") +
-#     geom_text(aes(y = pct, label = pct), position = position_dodge2(width = 1), vjust = -0.40, size = rel(3)) +
-#     theme(legend.position = "top")
-# 
-# p <- ggplot(confi_exp, aes(x = expertise, y = pct, fill = confidence))
-# p + geom_bar(stat = "identity", color = "gray80") +
-#     scale_fill_viridis_d("Confidence", labels = c("high confidence", "low confidence", "ambiguous")) +
-#     scale_y_continuous(labels = scales::label_percent(scale = 1)) +
-#     scale_x_discrete(labels = c("Some Experience", "No Experience")) +
-#     labs(x = NULL, y = "Mean Confidence",
-#        fill = "Confidence",
-#        title = "Mean confidence per expertise (%)") +
-#     theme(legend.position = "top") +
-#     coord_flip()
+confi_hem <- df_long_clean %>%
+  group_by(hemisphere, confidence) %>%
+  summarize(N = n()) %>%
+  mutate(pct = round(N / sum(N) * 100, 1)) %>%
+  select(confidence, pct)
+
+confi_hem <- within(confi_hem, confidence <- factor(confidence, levels = c("high_confidence", "low_confidence", "ambiguous")))
+
+p <- ggplot(confi_hem, aes(x = confidence, y = pct, fill = hemisphere))
+p + geom_bar(stat = "identity", position = "dodge2", alpha = .9) +
+    scale_fill_brewer(type = "qual", palette = "Dark2") +
+    scale_y_continuous(labels = scales::label_percent(scale = 1),
+                       expand = expansion(mult = c(0, 0.05))) +
+    scale_x_discrete(labels = c("High Confidence", "Low Confidence", "Ambiguous")) +
+    labs(x = NULL, y = "Confidence",
+         fill = "Hemisphere",
+         title = "Confidence per hemisphere (%)") +
+    geom_text(aes(y = pct, label = pct), position = position_dodge2(width = 1), vjust = -0.40, size = rel(3), family = dviz_font_family) +
+    theme_minimal_hgrid() + 
+    theme(legend.position = "top",
+          axis.line.x.bottom = element_line(size = .5, colour = "black"),
+          axis.ticks.x = element_blank())
+
+p <- ggplot(confi_hem, aes(x = reorder(hemisphere, -pct), y = pct, fill = confidence))
+p + geom_bar(stat = "identity", color = "gray80") +
+    scale_fill_viridis_d("Confidence", labels = c("high confidence", "low confidence", "ambiguous")) +
+    scale_y_continuous(labels = scales::label_percent(scale = 1),
+                       expand = expansion(mult = c(0, 0.05))) +
+    scale_x_discrete(labels = c("Southern", "Northern")) +
+    labs(x = NULL, y = "Confidence",
+       fill = "Hemisphere",
+       title = "Confidence per hemisphere (%)") +
+    theme(legend.position = "top",
+          axis.ticks.y = element_blank()) +
+    coord_flip()
+
+# Confidence per gender
+confi_gender <- df_long_clean %>%
+  group_by(gender, confidence) %>%
+  summarize(N = n()) %>%
+  mutate(pct = round(N / sum(N) * 100, 1)) %>%
+  select(gender, confidence, pct)
+
+confi_gender <- within(confi_gender, confidence <- factor(confidence, levels = c("high_confidence", "low_confidence", "ambiguous")))
+
+p <- ggplot(confi_gender, aes(x = confidence, y = pct, fill = gender))
+p + geom_bar(stat = "identity", position = "dodge2", alpha = .9) +
+    scale_fill_brewer(type = "qual", palette = "Dark2", labels = c("female", "male")) +
+    scale_y_continuous(labels = scales::label_percent(scale = 1),
+                       expand = expansion(mult = c(0, 0.05))) +
+    scale_x_discrete(labels = c("High Confidence", "Low Confidence", "Ambiguous")) +
+    labs(x = NULL, y = "Confidence",
+         fill = "Gender",
+         title = "Confidence per gender (%)") +
+    geom_text(aes(y = pct, label = pct), position = position_dodge2(width = 1), vjust = -0.40, size = rel(3), family = dviz_font_family) +
+    theme_minimal_hgrid() +
+    theme(legend.position = "top",
+          axis.line.x.bottom = element_line(size = .5, colour = "black"),
+          axis.ticks.x = element_blank())
+
+p <- ggplot(confi_gender, aes(x = gender, y = pct, fill = confidence))
+p + geom_bar(stat = "identity", color = "gray80") +
+    scale_fill_viridis_d("Confidence", labels = c("high confidence", "low confidence", "ambiguous")) +
+    scale_y_continuous(labels = scales::label_percent(scale = 1),
+                       expand = expansion(mult = c(0, 0.05))) +
+    scale_x_discrete(labels = c("Female", "Male")) +
+    labs(x = NULL, y = "Confidence",
+       fill = "Confidence",
+       title = "Confidence per gender (%)") +
+    theme(legend.position = "top",
+          axis.ticks.y = element_blank()) +
+    coord_flip()
+
+# Confidence per handedness
+confi_hand_all <- df_long_clean %>%
+  group_by(handedness, confidence) %>%
+  summarize(N = n()) %>%
+  mutate(pct = round(N / sum(N) * 100, 1)) %>%
+  select(handedness, confidence, pct)
+
+confi_hand <- df_long_clean %>%
+  mutate(hand = ifelse(handedness == "l" | handedness == "b", "l", "r")) %>% 
+  group_by(hand, confidence) %>%
+  summarize(N = n()) %>%
+  mutate(pct = round(N / sum(N) * 100, 1)) %>%
+  select(hand, confidence, pct)
+
+confi_hand <- within(confi_hand, confidence <- factor(confidence, levels = c("high_confidence", "low_confidence", "ambiguous")))
+confi_hand <- within(confi_hand, handedness <- factor(hand, levels = c("r", "l")))
+confi_hand$hand <- ordered(confi_hand$hand, levels = c("r", "l"))
+
+p <- ggplot(confi_hand, aes(x = confidence, y = pct, fill = handedness))
+p + geom_bar(stat = "identity", position = "dodge2", alpha = .9) +
+    scale_fill_brewer(type = "qual", palette = "Dark2", labels = c("right-handed", "left-handed", "ambidextrous")) +
+    scale_y_continuous(labels = scales::label_percent(scale = 1),
+                       expand = expansion(mult = c(0, 0.05))) +
+    scale_x_discrete(labels = c("High Confidence", "Low Confidence", "Ambiguous")) +
+    labs(x = NULL, y = "Confidence",
+         fill = "Handedness",
+         title = "Confidence per handedness (%)") +
+    geom_text(aes(y = pct, label = pct), position = position_dodge2(width = 1), vjust = -0.40, size = rel(3)) +
+    theme_minimal_hgrid() +
+    theme(legend.position = "top",
+          axis.line.x.bottom = element_line(size = .5, colour = "black"),
+          axis.ticks.x = element_blank())
+
+p <- ggplot(confi_hand, aes(x = handedness, y = pct, fill = confidence))
+p + geom_bar(stat = "identity", color = "gray80") +
+    scale_fill_viridis_d("Confidence", labels = c("high confidence", "low confidence", "ambiguous")) +
+    scale_y_continuous(labels = scales::label_percent(scale = 1),
+                       expand = expansion(mult = c(0, 0.05))) +
+    scale_x_discrete(labels = c("Right-handed", "Left-handed", "Ambidextrous")) +
+    labs(x = NULL, y = "Confidence",
+       fill = "Confidence",
+       title = "Confidence per handedness (%)") +
+    theme(legend.position = "top",
+          axis.ticks.y = element_blank()) +
+    coord_flip()
+
+# Confidence per expertise
+confi_exp <- df_long_clean %>%
+  group_by(expertise, confidence) %>%
+  summarize(N = n()) %>%
+  mutate(pct = round(N / sum(N) * 100, 1)) %>%
+  select(expertise, confidence, pct)
+
+confi_exp <- within(confi_exp, confidence <- factor(confidence, levels = c("high_confidence", "low_confidence", "ambiguous")))
+confi_exp <- within(confi_exp, expertise <- factor(expertise, levels = c("some_experience", "no_experience")))
+
+p <- ggplot(confi_exp, aes(x = confidence, y = pct, fill = expertise))
+p + geom_bar(stat = "identity", position = "dodge2", alpha = .9) +
+    scale_fill_brewer(type = "qual", palette = "Dark2", labels = c("some experience", "no experience")) +
+    scale_y_continuous(labels = scales::label_percent(scale = 1),
+                       expand = expansion(mult = c(0, 0.05))) +
+    scale_x_discrete(labels = c("High Confidence", "Low Confidence", "Ambiguous")) +
+    labs(x = NULL, y = "Confidence",
+         fill = "Expertise",
+         title = "Confidence per expertise (%)") +
+    geom_text(aes(y = pct, label = pct), position = position_dodge2(width = 1), vjust = -0.40, size = rel(3), family = dviz_font_family) +
+    theme_minimal_hgrid() +
+    theme(legend.position = "top",
+          axis.line.x.bottom = element_line(size = .5, colour = "black"),
+          axis.ticks.x = element_blank())
+
+p <- ggplot(confi_exp, aes(x = expertise, y = pct, fill = confidence))
+p + geom_bar(stat = "identity", color = "gray80") +
+    scale_fill_viridis_d("Confidence", labels = c("high confidence", "low confidence", "ambiguous")) +
+    scale_y_continuous(labels = scales::label_percent(scale = 1),
+                       expand = expansion(mult = c(0, 0.05))) +
+    scale_x_discrete(labels = c("Some Experience", "No Experience")) +
+    labs(x = NULL, y = "Mean Confidence",
+       fill = "Confidence",
+       title = "Mean confidence per expertise (%)") +
+    theme(legend.position = "top",
+          axis.ticks.y = element_blank()) +
+    coord_flip()
 ```
 
 ### Confidence vs accuracy per respond.
