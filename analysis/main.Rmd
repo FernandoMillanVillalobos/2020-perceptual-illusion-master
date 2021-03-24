@@ -633,6 +633,7 @@ accu_resp_north <- accu_resp %>%
 
 accu_resp_north <- within(accu_resp_north, ds_owner <- factor(ds_owner, levels = c("j", "g", "v", "a")))
 accu_resp_north <- within(accu_resp_north, light_dir <- factor(light_dir, levels = c(0, 337.5, 315, 292.5, 270)))
+# df_long_clean$light_dir <- within(df_long_clean, light_dir <- factor(light_dir, levels = c(0, 337.5, 315, 292.5, 270)))
 
 p <- ggplot(accu_resp_north, aes(x = light_dir, y = mean, fill = light_dir, label = mean))
 p + geom_bar(stat = "identity") +
@@ -672,9 +673,7 @@ p + geom_bar(stat = "identity", position = "dodge2") +
          title = "Mean accuracy per hemisphere") +
     theme_minimal_hgrid() +
     theme(legend.position = "top")
-```
 
-```{r}
 # Calculating accuracy per participant and handedness
 accu_hand_l <- df_long %>% 
   filter(accuracy == "yes",
@@ -727,18 +726,30 @@ accu_resp_hand <-  accu_resp_hand_l %>% left_join(accu_resp_hand_r)
 # Calculating accuracy per handedness and respond (northern light direction)
 accu_hand_l_north<- accu_resp_hand %>%
   group_by(light_dir) %>%
-  summarise(mean_left = mean(accu_left))
+  summarise(left = mean(accu_left))
 
 accu_hand_r_north<- accu_resp_hand %>%
   group_by(light_dir) %>%
-  summarise(mean_right = mean(accu_right))
+  summarise(right = mean(accu_right))
 
 accu_hand_north <- accu_hand_l_north %>% left_join(accu_hand_r_north)
 
-# p <- ggplot(accu_hand_north, aes(x = light_dir, y = ))
-```
+accu_hand_north_long <- accu_hand_north %>% pivot_longer(-light_dir, names_to = "handedness", values_to = "mean")
 
-```{r}
+accu_hand_north_long <- within(accu_hand_north_long, light_dir <- factor(light_dir, levels = c(0, 337.5, 315, 292.5, 270)))
+
+p <- ggplot(accu_hand_north_long, aes(x = light_dir, y = mean, fill = handedness))
+p + geom_bar(stat = "identity", position = "dodge2") +
+    scale_fill_brewer(type = "qual", palette = "Dark2") +
+    scale_y_continuous(labels = scales::label_percent(scale = 1),
+                       expand = expansion(mult = c(0, 0.05)),
+                       limits = c(0, 100)) +
+    labs(x = "Light Direction", y = "Mean Accuracy",
+         fill = "Handedness",
+         title = "Mean accuracy per handedness") +
+    theme_minimal_hgrid() +
+    theme(legend.position = "top")
+
 # Calculating accuracy per gender and respond
 accu_gender_m <- df_long %>% 
   filter(accuracy == "yes",
@@ -761,13 +772,29 @@ accu_gender <- accu_gender_m %>% left_join(accu_gender_f)
 # Calculating accuracy per gender and respond (northern light direction)
 accu_gender_north_m <- accu_gender %>% 
   group_by(light_dir) %>% 
-  summarise(mean_male = mean(male_pct))
+  summarise(male = mean(male_pct))
 
 accu_gender_north_f <- accu_gender %>% 
   group_by(light_dir) %>% 
-  summarise(mean_female = mean(female_pct))
+  summarise(female = mean(female_pct))
 
 accu_gender_north <- accu_gender_north_m %>% left_join(accu_gender_north_f)
+
+accu_gender_north_long <- accu_gender_north %>% pivot_longer(-light_dir, names_to = "gender", values_to = "mean")
+
+accu_gender_north_long <- within(accu_gender_north_long, light_dir <- factor(light_dir, levels = c(0, 337.5, 315, 292.5, 270)))
+
+p <- ggplot(accu_gender_north_long, aes(x = light_dir, y = mean, fill = gender))
+p + geom_bar(stat = "identity", position = "dodge2") +
+    scale_fill_brewer(type = "qual", palette = "Dark2") +
+    scale_y_continuous(labels = scales::label_percent(scale = 1),
+                       expand = expansion(mult = c(0, 0.05)),
+                       limits = c(0, 100)) +
+    labs(x = "Light Direction", y = "Mean Accuracy",
+         fill = "Gender",
+         title = "Mean accuracy per gender") +
+    theme_minimal_hgrid() +
+    theme(legend.position = "top")
 
 # Calculating accuracy per expertise and respond
 accu_exp_some <- df_long %>% 
@@ -791,17 +818,32 @@ accu_exp <- accu_exp_some %>% left_join(accu_exp_no)
 # Calculating accuracy per expertise and respond (northern light direction)
 accu_exp_some_north <- accu_exp %>%
   group_by(light_dir) %>%
-  summarise(mean_some = mean(some_pct))
+  summarise(some = mean(some_pct))
 
 accu_exp_no_north <- accu_exp %>%
   group_by(light_dir) %>%
-  summarise(mean_no = mean(no_pct))
+  summarise(no = mean(no_pct))
 
 accu_exp_north <- accu_exp_some_north %>% left_join(accu_exp_no_north)
 
+accu_exp_north_long <- accu_exp_north %>% pivot_longer(-light_dir, names_to = "expertise", values_to = "mean")
 
+accu_exp_north_long <- within(accu_exp_north_long, light_dir <- factor(light_dir, levels = c(0, 337.5, 315, 292.5, 270)))
 
+p <- ggplot(accu_exp_north_long, aes(x = light_dir, y = mean, fill = expertise))
+p + geom_bar(stat = "identity", position = "dodge2") +
+    scale_fill_brewer(type = "qual", palette = "Dark2") +
+    scale_y_continuous(labels = scales::label_percent(scale = 1),
+                       expand = expansion(mult = c(0, 0.05)),
+                       limits = c(0, 100)) +
+    labs(x = "Light Direction", y = "Mean Accuracy",
+         fill = "Expertise",
+         title = "Mean accuracy per expertise") +
+    theme_minimal_hgrid() +
+    theme(legend.position = "top")
+```
 
+```{r}
 # p <- ggplot(accu_hem_degrees, aes(x = light_dir, y = pct, fill = hemisphere, label = pct))
 # p + geom_bar(stat = "identity", position = "dodge2") +
 #   scale_fill_brewer(type = "qual", palette = "Dark2") +
