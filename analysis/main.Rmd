@@ -646,14 +646,13 @@ p + geom_bar(stat = "identity", alpha = .9) +
          title = "Mean accuracy per data set owner") +
     geom_text(aes(y = mean, label = round(mean, digits = 1)), position = position_dodge2(width = 1), vjust = 2, size = rel(3), family = dviz_font_family) +
     facet_wrap(~ ds_owner) +
-    theme_minimal_hgrid() +
+    theme_dviz_hgrid() +
     theme(
       legend.position = "NULL",
       strip.background = element_blank(),
       axis.line.x.bottom = element_line(size = .3, color = "black"),
       axis.ticks.x = element_blank())
-```
-```{r}
+
 # Calculating accuracy mean per light direction and hemisphere
 accu_resp_n_hem <- accu_resp_north %>%
   filter(ds_owner == "j" | ds_owner == "g") %>%
@@ -679,7 +678,7 @@ p + geom_bar(stat = "identity", position = "dodge2", alpha = .9) +
     labs(x = "Light Direction", y = "Mean Accuracy",
          fill = "Hemisphere",
          title = "Mean accuracy per hemisphere") +
-    theme_minimal_hgrid() +
+    theme_dviz_hgrid() +
     theme(legend.position = "top",
     axis.line.x.bottom = element_line(size = .5, color = "black"),
     axis.ticks.x = element_blank())
@@ -758,7 +757,7 @@ p + geom_bar(stat = "identity", position = "dodge2", alpha =.9) +
     labs(x = "Light Direction", y = "Mean Accuracy",
          fill = "Handedness",
          title = "Mean accuracy per handedness") +
-    theme_minimal_hgrid() +
+    theme_dviz_hgrid() +
     theme(legend.position = "top",
     axis.line.x.bottom = element_line(size = .5, color = "black"),
     axis.ticks.x = element_blank())
@@ -807,7 +806,7 @@ p + geom_bar(stat = "identity", position = "dodge2", alpha = .9) +
     labs(x = "Light Direction", y = "Mean Accuracy",
          fill = "Gender",
          title = "Mean accuracy per gender") +
-    theme_minimal_hgrid() +
+    theme_dviz_hgrid() +
     theme(legend.position = "top",
     axis.line.x.bottom = element_line(size = .5, color = "black"),
     axis.ticks.x = element_blank())
@@ -856,7 +855,7 @@ p + geom_bar(stat = "identity", position = "dodge2", alpha = .9) +
     labs(x = "Light Direction", y = "Mean Accuracy",
          fill = "Expertise",
          title = "Mean accuracy per expertise") +
-    theme_minimal_hgrid() +
+    theme_dviz_hgrid() +
     theme(legend.position = "top",
           axis.line.x.bottom = element_line(size = .5, color = "black"),
           axis.ticks.x = element_blank())
@@ -894,7 +893,7 @@ p + geom_bar(stat = "identity", position = "dodge2", alpha = .9) +
          fill = "Hemisphere",
          title = "Confidence per hemisphere (%)") +
     geom_text(aes(y = pct, label = pct), position = position_dodge2(width = 1), vjust = -0.40, size = rel(3), family = dviz_font_family) +
-    theme_minimal_hgrid() + 
+    theme_dviz_hgrid() + 
     theme(legend.position = "top",
           axis.line.x.bottom = element_line(size = .5, colour = "black"),
           axis.ticks.x = element_blank())
@@ -931,7 +930,7 @@ p + geom_bar(stat = "identity", position = "dodge2", alpha = .9) +
          fill = "Gender",
          title = "Confidence per gender (%)") +
     geom_text(aes(y = pct, label = pct), position = position_dodge2(width = 1), vjust = -0.40, size = rel(3), family = dviz_font_family) +
-    theme_minimal_hgrid() +
+    theme_dviz_hgrid() +
     theme(legend.position = "top",
           axis.line.x.bottom = element_line(size = .5, colour = "black"),
           axis.ticks.x = element_blank())
@@ -976,8 +975,8 @@ p + geom_bar(stat = "identity", position = "dodge2", alpha = .9) +
     labs(x = NULL, y = "Confidence",
          fill = "Handedness",
          title = "Confidence per handedness (%)") +
-    geom_text(aes(y = pct, label = pct), position = position_dodge2(width = 1), vjust = -0.40, size = rel(3)) +
-    theme_minimal_hgrid() +
+    geom_text(aes(y = pct, label = pct), position = position_dodge2(width = 1), vjust = -0.40, size = rel(3), family = dviz_font_family) +
+    theme_dviz_hgrid() +
     theme(legend.position = "top",
           axis.line.x.bottom = element_line(size = .5, colour = "black"),
           axis.ticks.x = element_blank())
@@ -1015,7 +1014,7 @@ p + geom_bar(stat = "identity", position = "dodge2", alpha = .9) +
          fill = "Expertise",
          title = "Confidence per expertise (%)") +
     geom_text(aes(y = pct, label = pct), position = position_dodge2(width = 1), vjust = -0.40, size = rel(3), family = dviz_font_family) +
-    theme_minimal_hgrid() +
+    theme_dviz_hgrid() +
     theme(legend.position = "top",
           axis.line.x.bottom = element_line(size = .5, colour = "black"),
           axis.ticks.x = element_blank())
