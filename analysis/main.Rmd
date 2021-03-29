@@ -857,6 +857,34 @@ p + geom_bar(stat = "identity", position = "dodge2", alpha = .9) +
     theme(legend.position = "top",
           axis.line.x.bottom = element_line(size = .5, color = "black"),
           axis.ticks.x = element_blank())
+
+# Expertise vs handedness
+accu_exp_hand <-  left_join(accu_hand_north_long %>% 
+                              rename(mean_hand = mean), 
+                            accu_exp_north_long %>% 
+                              rename(mean_exp = mean),
+                            by = "light_dir") %>% 
+  mutate(mean = (mean_hand + mean_exp) / 2) %>% 
+  select(-c(mean_hand, mean_exp))
+
+accu_exp_hand <- within(accu_exp_hand, light_dir <- factor(light_dir, levels = c(0, 337.5, 315, 292.5, 270)))
+accu_exp_hand <- within(accu_exp_hand, expertise <- factor(expertise, levels = c("some", "no")))
+
+p <- ggplot(accu_exp_hand, aes(x = light_dir, y = mean, fill = handedness))
+p + geom_bar(stat = "identity", position = "dodge2", alpha = .9) +
+    scale_fill_brewer(type = "qual", palette = "Dark2") +
+    scale_y_continuous(labels = scales::label_percent(scale = 1),
+                       expand = expansion(mult = c(0, 0.05)),
+                       limits = c(0, 100)) +
+    geom_text(aes(y = mean, label = round(mean, digits = 1)), position = position_dodge2(width = 1), vjust = -0.40, size = rel(3), family = dviz_font_family) +
+    labs(x = NULL, y = "Mean",
+         fill = "Handedness",
+         title = "Mean accuracy per expertise \nand handedness (NW)") +
+    theme_dviz_hgrid() +
+    theme(legend.position = "top",
+          axis.line.x.bottom = element_line(size = .5, color = "black"),
+          axis.ticks.x = element_blank()) + 
+    facet_wrap(~ expertise)
 ```
 
 ### Exploring confidence
