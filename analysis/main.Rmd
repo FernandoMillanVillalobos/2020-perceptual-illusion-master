@@ -894,7 +894,7 @@ p + geom_bar(stat = "identity", position = "dodge2", alpha = .9) +
 confi_hem <- df_long_clean %>%
   group_by(hemisphere, confidence) %>%
   summarize(N = n()) %>%
-  mutate(pct = round(N / sum(N) * 100, 1)) %>%
+  mutate(pct = N / sum(N) * 100) %>%
   select(confidence, pct)
 
 confi_hem <- within(confi_hem, confidence <- factor(confidence, levels = c("high_confidence", "low_confidence", "ambiguous")))
@@ -931,7 +931,7 @@ p + geom_bar(stat = "identity", color = "gray80") +
 confi_gender <- df_long_clean %>%
   group_by(gender, confidence) %>%
   summarize(N = n()) %>%
-  mutate(pct = round(N / sum(N) * 100, 1)) %>%
+  mutate(pct = N / sum(N) * 100) %>%
   select(gender, confidence, pct)
 
 confi_gender <- within(confi_gender, confidence <- factor(confidence, levels = c("high_confidence", "low_confidence", "ambiguous")))
@@ -968,14 +968,14 @@ p + geom_bar(stat = "identity", color = "gray80") +
 confi_hand_all <- df_long_clean %>%
   group_by(handedness, confidence) %>%
   summarize(N = n()) %>%
-  mutate(pct = round(N / sum(N) * 100, 1)) %>%
+  mutate(pct = N / sum(N) * 100) %>%
   select(handedness, confidence, pct)
 
 confi_hand <- df_long_clean %>%
   mutate(hand = ifelse(handedness == "l" | handedness == "b", "l", "r")) %>%
   group_by(hand, confidence) %>%
   summarize(N = n()) %>%
-  mutate(pct = round(N / sum(N) * 100, 1)) %>%
+  mutate(pct = N / sum(N) * 100) %>%
   select(hand, confidence, pct)
 
 confi_hand <- within(confi_hand, confidence <- factor(confidence, levels = c("high_confidence", "low_confidence", "ambiguous")))
@@ -1014,7 +1014,7 @@ p + geom_bar(stat = "identity", color = "gray80") +
 confi_exp <- df_long_clean %>%
   group_by(expertise, confidence) %>%
   summarize(N = n()) %>%
-  mutate(pct = round(N / sum(N) * 100, 1)) %>%
+  mutate(pct = N / sum(N) * 100) %>%
   select(expertise, confidence, pct)
 
 confi_exp <- within(confi_exp, confidence <- factor(confidence, levels = c("high_confidence", "low_confidence", "ambiguous")))
@@ -1055,7 +1055,7 @@ accu_confi_yes <- df_long_clean %>%
   filter(accuracy == "yes") %>% 
   group_by(light_dir, confidence) %>%
   summarize(N = n()) %>%
-  mutate(pct = round(N / sum(N) * 100, 1)) %>%
+  mutate(pct = N / sum(N) * 100) %>%
   select(light_dir, confidence, pct)
 
 accu_confi_yes <- within(accu_confi_yes, light_dir <- factor(light_dir, levels = c(0, 337.5, 315, 292.5, 270)))
@@ -1064,7 +1064,7 @@ accu_confi_no <- df_long_clean %>%
   filter(accuracy == "no") %>% 
   group_by(light_dir, confidence) %>%
   summarize(N = n()) %>%
-  mutate(pct = round(N / sum(N) * 100, 1)) %>%
+  mutate(pct = N / sum(N) * 100) %>%
   select(light_dir, confidence, pct)
 
 accu_confi_no <- within(accu_confi_no, light_dir <- factor(light_dir, levels = c(0, 337.5, 315, 292.5, 270)))
@@ -1092,6 +1092,13 @@ p + geom_bar(stat = "identity", color = "gray80") +
        title = "Overall participant's confidence when failure (NW)") +
     theme(legend.position = "top",
           axis.ticks.x = element_blank())
+```
+
+```{r}
+# accu_resp_all <- accu_resp_north %>% 
+#   group_by(light_dir) %>% 
+#   summarise(mean = mean(mean))
+# accu_resp_all
 ```
 
 ```{r}
