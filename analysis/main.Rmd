@@ -13,7 +13,7 @@ output:
     theme: paper
     df_print: kable
     toc: yes
-    toc_depth: 5
+    toc_depth: 4
     number_sections: yes
     toc_float: 
       collapsed: yes
@@ -41,9 +41,9 @@ knitr::opts_chunk$set(
 user_name <- "fernandomillanvillalobos" # your Git username (only needed if
 # you want to deploy to GH pages)
 project_name <- "2020-perceptual-illusion-master" # adapt!
-package_date <- "2021-01-01" # date of the CRAN snapshot that
+package_date <- "2021-06-01" # date of the CRAN snapshot that
 # the checkpoint package uses
-r_version <- "4.0.4" # R-Version to use
+r_version <- "4.1.0" # R-Version to use
 options(Ncpus = 4) # use 4 cores for parallelized installation of packages
 if (r_version != paste0(version$major, ".", version$minor)) {
   stop("ERROR: specified R version does not match currently used.")
@@ -648,7 +648,7 @@ p + geom_bar(stat = "identity", alpha = .9) +
     theme(
       legend.position = "NULL",
       strip.background = element_blank(),
-      axis.line.x.bottom = element_line(size = .3, color = "black"),
+      # axis.line.x.bottom = element_line(size = .3, color = "black"),
       axis.ticks.x = element_blank())
 
 # Calculating accuracy mean per light direction and hemisphere
