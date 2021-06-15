@@ -41,7 +41,7 @@ knitr::opts_chunk$set(
 user_name <- "fernandomillanvillalobos" # your Git username (only needed if
 # you want to deploy to GH pages)
 project_name <- "2020-perceptual-illusion-master" # adapt!
-package_date <- "2021-06-01" # date of the CRAN snapshot that
+package_date <- "2021-01-01" # date of the CRAN snapshot that
 # the checkpoint package uses
 r_version <- "4.1.0" # R-Version to use
 options(Ncpus = 4) # use 4 cores for parallelized installation of packages
@@ -227,11 +227,10 @@ df.v <- read.table("input/ignore/v_ds.csv", sep = ",", header = TRUE, check.name
 df.a <- read.table("input/ignore/a_ds.csv", sep = ",", header = TRUE, check.names = FALSE)
 
 # Cleaning variables names
-df.j <- lapply(df.j$q10_R000_0, tolower)
-# df.j <- janitor::clean_names(df.j)
-# df.g <- janitor::clean_names(df.g)
-# df.v <- janitor::clean_names(df.v)
-# df.a <- janitor::clean_names(df.a)
+df.j <- janitor::clean_names(df.j)
+df.g <- janitor::clean_names(df.g)
+df.v <- janitor::clean_names(df.v)
+df.a <- janitor::clean_names(df.a)
 ```
 
 Cleaning Julien's ds variables.
