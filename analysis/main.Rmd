@@ -227,10 +227,11 @@ df.v <- read.table("input/ignore/v_ds.csv", sep = ",", header = TRUE, check.name
 df.a <- read.table("input/ignore/a_ds.csv", sep = ",", header = TRUE, check.names = FALSE)
 
 # Cleaning variables names
-df.j <- janitor::clean_names(df.j, sep_in = NULL)
-df.g <- janitor::clean_names(df.g, sep_in = NULL)
-df.v <- janitor::clean_names(df.v, sep_in = NULL)
-df.a <- janitor::clean_names(df.a, sep_in = NULL)
+df.j <- lapply(df.j$q10_R000_0, tolower)
+# df.j <- janitor::clean_names(df.j)
+# df.g <- janitor::clean_names(df.g)
+# df.v <- janitor::clean_names(df.v)
+# df.a <- janitor::clean_names(df.a)
 ```
 
 Cleaning Julien's ds variables.
@@ -528,7 +529,7 @@ df_wide[, cols] <- lapply(df_wide[, cols] , factor)
 
 # Reshaping from wide to long
 df_long <- df_wide %>% pivot_longer(
-  cols = q10_r000_0:q80_v135_337.5,
+  cols = q10_r000_0:q80_v135_337_5,
   names_to = c("landform", "land_dir", "light_dir"),
   names_pattern = "q?_(.)(.*)_(.*?..*)",
   values_to = "respond")
